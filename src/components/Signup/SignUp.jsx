@@ -18,7 +18,7 @@ function Alert(props) {
 }
 
 const SignUp = () => {
-  const [name, setName] = useState("");
+  const [pseudo, setPseudo] = useState("");
   const [redirect, setRedirect] = useState(false);
   const [open, setOpen] = useState(false);
   const [avatar, setLogo] = useState("");
@@ -32,7 +32,7 @@ const SignUp = () => {
     e.preventDefault();
     try {
       const res = await axios.post("https://mychatappmessenger.herokuapp.com/users", {
-        name,
+        pseudo,
         avatar,
       });
       window.localStorage.setItem("uuid", res.data.uuid);
@@ -78,7 +78,7 @@ const SignUp = () => {
                     style={{ margin: "20px" }}
                     id="standard-basic"
                     label="Pseudo"
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(e) => setPseudo(e.target.value)}
                   />
                   <Button
                     type="submit"
@@ -96,7 +96,7 @@ const SignUp = () => {
                   onClose={handleClose}
                 >
                   <Alert onClose={handleClose} severity="success">
-                    Welcome {name}
+                    Welcome {pseudo}
                   </Alert>
                 </Snackbar>
               </Paper>
