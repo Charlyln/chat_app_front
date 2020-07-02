@@ -36,12 +36,12 @@ export default function Test() {
     }
   };
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     getMessages();
-  //   }, 2000);
-  //   return () => clearInterval(interval);
-  // }, []);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      getMessages();
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
 
   const fetchData = async (e) => {
     e.preventDefault();
