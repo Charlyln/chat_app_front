@@ -19,36 +19,35 @@ export default function Test() {
   }, []);
 
   const getMessages = () => {
-    Axios.get(`http://localhost:8080/messages`).then(
+    Axios.get(`https://mychatappmessenger.herokuapp.com/messages`).then(
       (res) => setdataMessages(res.data),
       setIsLoading(false)
     );
   };
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      getMessages();
-    }, 2000);
-    return () => clearInterval(interval);
-  }, []);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     getMessages();
+  //   }, 2000);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   const fetchData = async (e) => {
     e.preventDefault();
     const UserId = window.localStorage.getItem("uuid");
-    await Axios.post("http://localhost:8080/messages", {
-      content: message,
+    await Axios.post("https://mychatappmessenger.herokuapp.com/messages", {
+      message,
       UserId,
     });
-    await Axios.get(`http://localhost:8080/messages`).then((res) =>
-      setdataMessages(res.data)
-    );
+    await Axios.get(
+      `https://mychatappmessenger.herokuapp.com/messages`
+    ).then((res) => setdataMessages(res.data));
     setMessage("");
   };
 
   const UserId = window.localStorage.getItem("uuid");
   return (
     <>
-      
       {isLoading ? (
         <p>Loading</p>
       ) : (
@@ -60,6 +59,7 @@ export default function Test() {
                   return new Date(a.createdAt) - new Date(b.createdAt);
                 })
                 .slice(Math.max(dataMessages.length - 5, 0))
+                .filter((message) => message.Team.uuid === UserId)
                 .map((message) =>
                   dataMessages.indexOf(message) === dataMessages.length - 1 ? (
                     <Zoom left collapse>
@@ -67,24 +67,21 @@ export default function Test() {
                         elevation={4}
                         style={{ margin: 32, width: "300px" }}
                         className={
-                          message.User.id === UserId ? "paperMe" : "paperOther"
+                          message.Team.id === UserId ? "paperMe" : "paperOther"
                         }
                       >
                         <ListItem
                           alignItems="flex-start"
                           className={
-                            message.User.id === UserId ? "listMe" : "listOther"
+                            message.Team.id === UserId ? "listMe" : "listOther"
                           }
                         >
                           <ListItemAvatar>
-                            <Avatar
-                              alt="Temy Sharp"
-                              src={message.User.avatar}
-                            />
+                            <Avatar alt="Temy Sharp" src={message.Team.logo} />
                           </ListItemAvatar>
                           <ListItemText
-                            primary={message.content}
-                            secondary={message.User.pseudo}
+                            primary={message.pseudo}
+                            secondary={message.Team.name}
                           />
                           {/* <ThumbUpIcon
                             // onClick={onLike}
@@ -100,24 +97,22 @@ export default function Test() {
                       elevation={4}
                       style={{ margin: 32, width: "300px" }}
                       className={
-                        message.User.id === UserId ? "paperMe" : "paperOther"
+                        message.Team.id === UserId ? "paperMe" : "paperOther"
                       }
                     >
                       <ListItem
                         alignItems="flex-start"
                         className={
-                          message.User.id === UserId ? "listMe" : "listOther"
+                          message.Team.id === UserId ? "listMe" : "listOther"
                         }
                       >
                         <ListItemAvatar>
-                          <Avatar alt="Temy Sharp" src={message.User.avatar} />
+                          <Avatar alt="Temy Sharp" src={message.Team.logo} />
                         </ListItemAvatar>
                         <ListItemText
-                          primary={message.content}
+                          primary={message.pseudo}
                           secondary={
-                            <React.Fragment>
-                              {message.User.pseudo}
-                            </React.Fragment>
+                            <React.Fragment>{message.Team.name}</React.Fragment>
                           }
                         />
                         {/* <ThumbUpIcon

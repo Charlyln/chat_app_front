@@ -18,10 +18,10 @@ function Alert(props) {
 }
 
 const SignUp = () => {
-  const [pseudo, setPseudo] = useState("");
+  const [name, setName] = useState("");
   const [redirect, setRedirect] = useState(false);
   const [open, setOpen] = useState(false);
-  const [avatar, setAvatar] = useState("");
+  const [avatar, setLogo] = useState("");
 
   const handleClose = () => {
     setOpen(false);
@@ -31,11 +31,11 @@ const SignUp = () => {
   const Signup = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:8080/users", {
-        pseudo,
+      const res = await axios.post("https://mychatappmessenger.herokuapp.com/users", {
+        name,
         avatar,
       });
-      window.localStorage.setItem("uuid", res.data.id);
+      window.localStorage.setItem("uuid", res.data.uuid);
       setOpen(true);
     } catch (err) {
       console.log(err);
@@ -44,7 +44,7 @@ const SignUp = () => {
 
   const getAvatar = () => {
     Axios.get(`https://randomuser.me/api`).then((res) =>
-    setAvatar(res.data.results[0].picture.large)
+    setLogo(res.data.results[0].picture.large)
     );
   };
 
@@ -78,7 +78,7 @@ const SignUp = () => {
                     style={{ margin: "20px" }}
                     id="standard-basic"
                     label="Pseudo"
-                    onChange={(e) => setPseudo(e.target.value)}
+                    onChange={(e) => setName(e.target.value)}
                   />
                   <Button
                     type="submit"
@@ -96,7 +96,7 @@ const SignUp = () => {
                   onClose={handleClose}
                 >
                   <Alert onClose={handleClose} severity="success">
-                    Welcome {pseudo}
+                    Welcome {name}
                   </Alert>
                 </Snackbar>
               </Paper>
