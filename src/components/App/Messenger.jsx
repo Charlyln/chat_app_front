@@ -45,15 +45,20 @@ export default function Test() {
 
   const fetchData = async (e) => {
     e.preventDefault();
-    const UserId = window.localStorage.getItem("uuid");
-    await Axios.post("https://mychatappmessenger.herokuapp.com/messages", {
-      message,
-      UserId,
-    });
-    await Axios.get(
-      `https://mychatappmessenger.herokuapp.com/messages`
-    ).then((res) => setdataMessages(res.data));
-    setMessage("");
+    try {
+      const UserId = window.localStorage.getItem("uuid");
+      await Axios.post("https://mychatappmessenger.herokuapp.com/messages", {
+        message,
+        UserId,
+      });
+      const res = await Axios.get(
+        `https://mychatappmessenger.herokuapp.com/messages`
+      );
+      setdataMessages(res.data);
+      setMessage("");
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const UserId = window.localStorage.getItem("uuid");
