@@ -141,23 +141,23 @@ export default function Test() {
               </Button>
             )}
             <Grid container alignItems="center" justify="center">
-              <Button type="button" onClick={() => setMessage("😀")}>
+              <Button type="button" onClick={() => setMessage(message + "😀")}>
                 <span role="img" aria-label="donut">
                   😀
                 </span>
               </Button>
-              <Button type="button" onClick={() => setMessage("😍")}>
+              <Button type="button" onClick={() => setMessage(message + "😍")}>
                 <span role="img" aria-label="donut">
                   😍
                 </span>
               </Button>
-              <Button type="button" onClick={() => setMessage("🤣")}>
+              <Button type="button" onClick={() => setMessage(message + "🤣")}>
                 <span role="img" aria-label="donut">
                   🤣
                 </span>
               </Button>
 
-              <Button type="button" onClick={() => setMessage("🤘")}>
+              <Button type="button" onClick={() => setMessage(message + "🤘")}>
                 <span role="img" aria-label="donut">
                   🤘
                 </span>
