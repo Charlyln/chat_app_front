@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
+import Axios from "axios";
+import { Avatar } from "@material-ui/core";
 // import IconButton from "@material-ui/core/IconButton";
 // import MenuIcon from "@material-ui/icons/Menu";
 // import AccountCircle from "@material-ui/icons/AccountCircle";
@@ -10,12 +12,13 @@ import Toolbar from "@material-ui/core/Toolbar";
 // import MoreIcon from '@material-ui/icons/MoreVert';
 
 export default function MyAppBar() {
-  // const [dataMessages, setdataMessages] = useState([]);
-  // const [isLoading, setisLoading] = useState(true);
+  const [dataMessages, setdataMessages] = useState([]);
+  const [isLoading, setisLoading] = useState(true);
+  
 
-  // useEffect(() => {
-  //   getUser();
-  // }, []);
+  useEffect(() => {
+    getUser();
+  }, []);
 
   // const getMessages = async () => {
   //   const id = window.localStorage.getItem("uuid");
@@ -31,32 +34,37 @@ export default function MyAppBar() {
   //   }, 1000);
   // }, []);
 
-  // const getUser = async () => {
-  //   const id = window.localStorage.getItem("uuid");
+  const getUser = async () => {
+    const id = window.localStorage.getItem("uuid");
 
-  //   try {
-  //     const res = await Axios.get(
-  //       `https://virusclicker.herokuapp.com/users/${id}`
-  //     );
-  //     console.log(res.data);
-  //   } catch (err) {
-  //     console.log(err);
-  //   } finally {
-  //     setisLoading(false);
-  //   }
-  // };
+    try {
+      const res = await Axios.get(
+        `https://mychatappmessenger.herokuapp.com/users/${id}`
+      );
+      setdataMessages(res.data);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setisLoading(false);
+    }
+  };
+
+  
 
   return (
     <>
-      <div>
-        <AppBar position="static">
-          <Toolbar>
-            {/* <Avatar
-              alt="Temy Sharp"
-              src={dataMessages.avatar}
-              style={{ width: "50px", height: "50px" }}
-            /> */}
-            {/* <IconButton edge="start" color="inherit" aria-label="menu">
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <div>
+          <AppBar position="static">
+            <Toolbar>
+              <Avatar
+                alt="Temy Sharp"
+                src={dataMessages.avatar}
+                style={{ width: "50px", height: "50px" }}
+              />
+              {/* <IconButton edge="start" color="inherit" aria-label="menu">
             <MenuIcon />
             </IconButton>
             <IconButton aria-label="show 4 new mails" color="inherit">
@@ -88,9 +96,10 @@ export default function MyAppBar() {
           >
           <MoreIcon />
           </IconButton> */}
-          </Toolbar>
-        </AppBar>
-      </div>
+            </Toolbar>
+          </AppBar>
+        </div>
+      )}
     </>
   );
 }
