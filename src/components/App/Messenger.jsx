@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import { Paper, TextField, Button } from "@material-ui/core";
+import { Paper, TextField, Button, ListItemAvatar, Avatar } from "@material-ui/core";
 import Axios from "axios";
 import "./messenger.css";
 
@@ -85,12 +85,12 @@ export default function Test() {
                       message.userUuid === UserId ? "listMe" : "listOther"
                     }
                   >
-                    {/* <ListItemAvatar>
-           <Avatar alt="Temy Sharp" src={message.user.avatar} />
-          </ListItemAvatar> */}
+                    <ListItemAvatar>
+                      <Avatar alt="Temy Sharp" src={message.user.avatar} />
+                    </ListItemAvatar>
                     <ListItemText
                       primary={message.content || "message"}
-                      // secondary={message.user.pseudo}
+                      secondary={message.user.pseudo}
                     />
                     {/* <ThumbUpIcon
            // onClick={onLike}
