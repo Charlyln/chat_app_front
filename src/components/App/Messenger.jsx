@@ -68,79 +68,43 @@ export default function Test() {
         <p>Loading</p>
       ) : (
         <>
-          <Zoom left>
-            <List style={{ width: "500px" }}>
-              {dataMessages
-                // .filter((message) => message.userUuid === UserId)
-                .sort(function (a, b) {
-                  return new Date(a.createdAt) - new Date(b.createdAt);
-                })
-                .slice(Math.max(dataMessages.length - 5, 0))
-                .map((message) =>
-                  dataMessages.indexOf(message) === dataMessages.length - 1 ? (
-                    <Zoom left collapse>
-                      <Paper
-                        elevation={4}
-                        style={{ margin: 32, width: "300px" }}
-                        className={
-                          message.userUuid === UserId ? "paperMe" : "paperOther"
-                        }
-                      >
-                        <ListItem
-                          alignItems="flex-start"
-                          className={
-                            message.userUuid === UserId ? "listMe" : "listOther"
-                          }
-                        >
-                          <ListItemAvatar>
-                            <Avatar alt="Temy Sharp" src={message.user.avatar} />
-                          </ListItemAvatar>
-                          <ListItemText
-                            primary={message.content}
-                            secondary={message.user.pseudo}
-                          />
-                          {/* <ThumbUpIcon
-                            // onClick={onLike}
-                            color="disabled"
-                            fontSize="small"
-                            style={{ cursor: "pointer" }}
-                          /> */}
-                        </ListItem>
-                      </Paper>
-                    </Zoom>
-                  ) : (
-                    <Paper
-                      elevation={4}
-                      style={{ margin: 32, width: "300px" }}
-                      className={
-                        message.userUuid === UserId ? "paperMe" : "paperOther"
-                      }
-                    >
-                      <ListItem
-                        alignItems="flex-start"
-                        className={
-                          message.userUuid === UserId ? "listMe" : "listOther"
-                        }
-                      >
-                        <ListItemAvatar>
-                          <Avatar alt="Temy Sharp" src={message.user.avatar} />
-                        </ListItemAvatar>
-                        <ListItemText
-                          primary={message.content}
-                          secondary={message.user.pseudo}
-                        />
-                        {/* <ThumbUpIcon
-                          // onClick={onLike}
-                          color="disabled"
-                          fontSize="small"
-                          style={{ cursor: "pointer" }}
-                        /> */}
-                      </ListItem>
-                    </Paper>
-                  )
-                )}
-            </List>
-          </Zoom>
+          <List style={{ width: "500px" }}>
+            {dataMessages
+              .sort(function (a, b) {
+                return new Date(a.createdAt) - new Date(b.createdAt);
+              })
+              .slice(Math.max(dataMessages.length - 5, 0))
+              .map((message) => (
+                <Paper
+                  elevation={4}
+                  style={{ margin: 32, width: "300px" }}
+                  className={
+                    message.userUuid === UserId ? "paperMe" : "paperOther"
+                  }
+                >
+                  <ListItem
+                    alignItems="flex-start"
+                    className={
+                      message.userUuid === UserId ? "listMe" : "listOther"
+                    }
+                  >
+                    {/* <ListItemAvatar>
+           <Avatar alt="Temy Sharp" src={message.user.avatar} />
+          </ListItemAvatar> */}
+                    <ListItemText
+                      primary={message.content || "message"}
+                      // secondary={message.user.pseudo}
+                    />
+                    {/* <ThumbUpIcon
+           // onClick={onLike}
+           color="disabled"
+           fontSize="small"
+           style={{ cursor: "pointer" }}
+         /> */}
+                  </ListItem>
+                </Paper>
+              ))}
+          </List>
           <form autoComplete="off" onSubmit={fetchData}>
             <TextField
               style={{ margin: "20px" }}
@@ -173,6 +137,112 @@ export default function Test() {
             )}
           </form>
         </>
+        // <>
+        //   <Zoom left>
+        //     <List style={{ width: "500px" }}>
+        //       {dataMessages
+        //         // .filter((message) => message.userUuid === UserId)
+        //         .sort(function (a, b) {
+        //           return new Date(a.createdAt) - new Date(b.createdAt);
+        //         })
+        //         // .slice(Math.max(dataMessages.length - 5, 0))
+        //         .map((message) =>
+        //           dataMessages.indexOf(message) === dataMessages.length - 1 ? (
+        //             <Zoom left collapse>
+        //               <Paper
+        //                 elevation={4}
+        //                 style={{ margin: 32, width: "300px" }}
+        //                 className={
+        //                   message.userUuid === UserId ? "paperMe" : "paperOther"
+        //                 }
+        //               >
+        //                 <ListItem
+        //                   alignItems="flex-start"
+        //                   className={
+        //                     message.userUuid === UserId ? "listMe" : "listOther"
+        //                   }
+        //                 >
+        //                   {/* <ListItemAvatar>
+        //                     <Avatar alt="Temy Sharp" src={message.user.avatar} />
+        //                   </ListItemAvatar> */}
+        //                   <ListItemText
+        //                     primary={message.content}
+        //                     secondary={message.user.pseudo}
+        //                   />
+        //                   {/* <ThumbUpIcon
+        //                     // onClick={onLike}
+        //                     color="disabled"
+        //                     fontSize="small"
+        //                     style={{ cursor: "pointer" }}
+        //                   /> */}
+        //                 </ListItem>
+        //               </Paper>
+        //             </Zoom>
+        //           ) : (
+        //             <Paper
+        //               elevation={4}
+        //               style={{ margin: 32, width: "300px" }}
+        //               className={
+        //                 message.userUuid === UserId ? "paperMe" : "paperOther"
+        //               }
+        //             >
+        //               <ListItem
+        //                 alignItems="flex-start"
+        //                 className={
+        //                   message.userUuid === UserId ? "listMe" : "listOther"
+        //                 }
+        //               >
+        //                 {/* <ListItemAvatar>
+        //                   <Avatar alt="Temy Sharp" src={message.user.avatar} />
+        //                 </ListItemAvatar> */}
+        //                 <ListItemText
+        //                   primary={message.content}
+        //                   secondary={message.user.pseudo}
+        //                 />
+        //                 {/* <ThumbUpIcon
+        //                   // onClick={onLike}
+        //                   color="disabled"
+        //                   fontSize="small"
+        //                   style={{ cursor: "pointer" }}
+        //                 /> */}
+        //               </ListItem>
+        //             </Paper>
+        //           )
+        //         )}
+        //     </List>
+        //   </Zoom>
+        //   <form autoComplete="off" onSubmit={fetchData}>
+        //     <TextField
+        //       style={{ margin: "20px" }}
+        //       id="message"
+        //       label="message"
+        //       variant="outlined"
+        //       value={message}
+        //       onChange={(e) => setMessage(e.target.value)}
+        //       autoFocus="autofocus"
+        //     />
+        //     {message ? (
+        //       <Button
+        //         type="submit"
+        //         variant="contained"
+        //         color="primary"
+        //         style={{ margin: "20px" }}
+        //       >
+        //         Send
+        //       </Button>
+        //     ) : (
+        //       <Button
+        //         type="submit"
+        //         variant="contained"
+        //         color="primary"
+        //         style={{ margin: "20px" }}
+        //         disabled
+        //       >
+        //         Send
+        //       </Button>
+        //     )}
+        //   </form>
+        // </>
       )}
     </>
   );
