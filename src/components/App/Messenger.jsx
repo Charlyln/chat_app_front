@@ -2,7 +2,14 @@ import React, { useEffect, useState } from "react";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import { Paper, TextField, Button, ListItemAvatar, Avatar } from "@material-ui/core";
+import {
+  Paper,
+  TextField,
+  Button,
+  ListItemAvatar,
+  Avatar,
+  Grid,
+} from "@material-ui/core";
 import Axios from "axios";
 import "./messenger.css";
 
@@ -112,6 +119,7 @@ export default function Test() {
               onChange={(e) => setMessage(e.target.value)}
               autoFocus="autofocus"
             />
+
             {message ? (
               <Button
                 type="submit"
@@ -132,6 +140,29 @@ export default function Test() {
                 Send
               </Button>
             )}
+            <Grid container alignItems="center" justify="center">
+              <Button type="button" onClick={() => setMessage("😀")}>
+                <span role="img" aria-label="donut">
+                  😀
+                </span>
+              </Button>
+              <Button type="button" onClick={() => setMessage("😍")}>
+                <span role="img" aria-label="donut">
+                  😍
+                </span>
+              </Button>
+              <Button type="button" onClick={() => setMessage("🤣")}>
+                <span role="img" aria-label="donut">
+                  🤣
+                </span>
+              </Button>
+
+              <Button type="button" onClick={() => setMessage("🤘")}>
+                <span role="img" aria-label="donut">
+                  🤘
+                </span>
+              </Button>
+            </Grid>
           </form>
         </>
         // <>
