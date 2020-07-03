@@ -2,19 +2,16 @@ import React, { useEffect, useState } from "react";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import Avatar from "@material-ui/core/Avatar";
 import { Paper, TextField, Button } from "@material-ui/core";
 import Axios from "axios";
-import Zoom from "react-reveal/Zoom";
 import "./messenger.css";
 
 export default function Test() {
   const [dataMessages, setdataMessages] = useState([]);
-  const [userData, setUserData] = useState("");
+  // const [userData, setUserData] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState("");
-  const [UserId, setUserId] = useState(window.localStorage.getItem("uuid"));
+  const [UserId] = useState(window.localStorage.getItem("uuid"));
 
   useEffect(() => {
     getMessages();
