@@ -14,6 +14,7 @@ export default function Test() {
   const [userData, setUserData] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState("");
+  const [UserId, setUserId] = useState(window.localStorage.getItem("uuid"));
 
   useEffect(() => {
     getMessages();
@@ -21,15 +22,15 @@ export default function Test() {
 
   const getMessages = async () => {
     try {
-      const UserId = window.localStorage.getItem("uuid");
+      // const UserId = window.localStorage.getItem("uuid");
       const res = await Axios.get(
         `https://mychatappmessenger.herokuapp.com/messages`
       );
       setdataMessages(res.data);
-      const resUsers = await Axios.get(
-        `https://mychatappmessenger.herokuapp.com/users/${UserId}`
-      );
-      setUserData(resUsers.data);
+      // const resUsers = await Axios.get(
+      //   `https://mychatappmessenger.herokuapp.com/users/${UserId}`
+      // );
+      // setUserData(resUsers.data);
       setIsLoading(false);
     } catch (err) {
       console.log(err);
@@ -48,8 +49,8 @@ export default function Test() {
     try {
       const UserId = window.localStorage.getItem("uuid");
       await Axios.post("https://mychatappmessenger.herokuapp.com/messages", {
-        message,
-        UserId,
+        content: message,
+        userUuid: UserId,
       });
       const res = await Axios.get(
         `https://mychatappmessenger.herokuapp.com/messages`
@@ -61,7 +62,6 @@ export default function Test() {
     }
   };
 
-  const UserId = window.localStorage.getItem("uuid");
   return (
     <>
       {isLoading ? (
@@ -71,11 +71,11 @@ export default function Test() {
           <Zoom left>
             <List style={{ width: "500px" }}>
               {dataMessages
+                // .filter((message) => message.userUuid === UserId)
                 .sort(function (a, b) {
                   return new Date(a.createdAt) - new Date(b.createdAt);
                 })
                 .slice(Math.max(dataMessages.length - 5, 0))
-                .filter((message) => message.userUuid === UserId)
                 .map((message) =>
                   dataMessages.indexOf(message) === dataMessages.length - 1 ? (
                     <Zoom left collapse>
@@ -93,11 +93,11 @@ export default function Test() {
                           }
                         >
                           <ListItemAvatar>
-                            <Avatar alt="Temy Sharp" src={userData.avatar} />
+                            <Avatar alt="Temy Sharp" src={message.user.avatar} />
                           </ListItemAvatar>
                           <ListItemText
                             primary={message.content}
-                            secondary={userData.pseudo}
+                            secondary={message.user.pseudo}
                           />
                           {/* <ThumbUpIcon
                             // onClick={onLike}
@@ -123,13 +123,11 @@ export default function Test() {
                         }
                       >
                         <ListItemAvatar>
-                          <Avatar alt="Temy Sharp" src={userData.avatar} />
+                          <Avatar alt="Temy Sharp" src={message.user.avatar} />
                         </ListItemAvatar>
                         <ListItemText
                           primary={message.content}
-                          secondary={
-                            <React.Fragment>{userData.pseudo}</React.Fragment>
-                          }
+                          secondary={message.user.pseudo}
                         />
                         {/* <ThumbUpIcon
                           // onClick={onLike}
