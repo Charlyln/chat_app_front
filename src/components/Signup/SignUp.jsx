@@ -12,6 +12,7 @@ import {
 import MuiAlert from "@material-ui/lab/Alert";
 import { Redirect } from "react-router-dom";
 import Axios from "axios";
+import { Toolbar, AppBar } from "@material-ui/core";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -21,7 +22,7 @@ const SignUp = () => {
   const [pseudo, setPseudo] = useState("");
   const [redirect, setRedirect] = useState(false);
   const [open, setOpen] = useState(false);
-  const [avatar, setLogo] = useState("");
+  const [avatar, setAvatar] = useState("");
   const [id] = useState(window.localStorage.getItem("uuid"));
 
   const handleClose = () => {
@@ -32,10 +33,13 @@ const SignUp = () => {
   const Signup = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("https://mychatappmessenger.herokuapp.com/users", {
-        pseudo,
-        avatar,
-      });
+      const res = await axios.post(
+        "https://mychatappmessenger.herokuapp.com/users",
+        {
+          pseudo,
+          avatar,
+        }
+      );
       window.localStorage.setItem("uuid", res.data.uuid);
       setOpen(true);
     } catch (err) {
@@ -45,16 +49,19 @@ const SignUp = () => {
 
   const getAvatar = () => {
     Axios.get(`https://randomuser.me/api`).then((res) =>
-    setLogo(res.data.results[0].picture.large)
+      setAvatar(res.data.results[0].picture.large)
     );
   };
 
-  if (id || window.localStorage.getItem("uuid")) {
+  if (redirect || id || window.localStorage.getItem("uuid")) {
     return <Redirect to="/wall" />;
   }
 
   return (
     <>
+      <AppBar position="static">
+        <Toolbar></Toolbar>
+      </AppBar>
       <MuiThemeProvider>
         <Grid container alignItems="center" style={{ height: "100%" }}>
           <Grid item xs={12}>

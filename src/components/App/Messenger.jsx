@@ -12,6 +12,7 @@ import {
 } from "@material-ui/core";
 import Axios from "axios";
 import "./messenger.css";
+import { Redirect } from "react-router-dom";
 
 export default function Test() {
   const [dataMessages, setdataMessages] = useState([]);
@@ -65,7 +66,9 @@ export default function Test() {
       console.log(err);
     }
   };
-
+  if (!window.localStorage.getItem("uuid")) {
+    return <Redirect to="/" />;
+  }
   return (
     <>
       {isLoading ? (
