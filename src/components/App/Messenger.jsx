@@ -13,6 +13,7 @@ import {
 import Axios from "axios";
 import "./messenger.css";
 import { Redirect } from "react-router-dom";
+import Slide from "react-reveal";
 
 export default function Test() {
   const [dataMessages, setdataMessages] = useState([]);
@@ -76,41 +77,45 @@ export default function Test() {
       ) : (
         <>
           <List style={{ width: "500px" }}>
-            {dataMessages
-              .sort(function (a, b) {
-                return new Date(a.createdAt) - new Date(b.createdAt);
-              })
-              .slice(Math.max(dataMessages.length - 5, 0))
-              .map((message) => (
-                <Paper
-                  elevation={4}
-                  style={{ margin: 32, width: "300px" }}
-                  className={
-                    message.userUuid === UserId ? "paperMe" : "paperOther"
-                  }
-                >
-                  <ListItem
-                    alignItems="flex-start"
-                    className={
-                      message.userUuid === UserId ? "listMe" : "listOther"
-                    }
-                  >
-                    <ListItemAvatar>
-                      <Avatar alt="Temy Sharp" src={message.user.avatar} />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={message.content || "message"}
-                      secondary={message.user.pseudo}
-                    />
-                    {/* <ThumbUpIcon
+            <Slide top cascade>
+              <div>
+                {dataMessages
+                  .sort(function (a, b) {
+                    return new Date(a.createdAt) - new Date(b.createdAt);
+                  })
+                  .slice(Math.max(dataMessages.length - 5, 0))
+                  .map((message) => (
+                    <Paper
+                      elevation={4}
+                      style={{ margin: 32, width: "300px" }}
+                      className={
+                        message.userUuid === UserId ? "paperMe" : "paperOther"
+                      }
+                    >
+                      <ListItem
+                        alignItems="flex-start"
+                        className={
+                          message.userUuid === UserId ? "listMe" : "listOther"
+                        }
+                      >
+                        <ListItemAvatar>
+                          <Avatar alt="Temy Sharp" src={message.user.avatar} />
+                        </ListItemAvatar>
+                        <ListItemText
+                          primary={message.content || "message"}
+                          secondary={message.user.pseudo}
+                        />
+                        {/* <ThumbUpIcon
            // onClick={onLike}
            color="disabled"
            fontSize="small"
            style={{ cursor: "pointer" }}
-         /> */}
-                  </ListItem>
-                </Paper>
-              ))}
+          /> */}
+                      </ListItem>
+                    </Paper>
+                  ))}
+              </div>
+            </Slide>
           </List>
           <form autoComplete="off" onSubmit={fetchData}>
             <TextField
@@ -169,7 +174,7 @@ export default function Test() {
           </form>
         </>
         // <>
-        //   <Zoom left>
+        //   <Slide left>
         //     <List style={{ width: "500px" }}>
         //       {dataMessages
         //         // .filter((message) => message.userUuid === UserId)
@@ -179,7 +184,7 @@ export default function Test() {
         //         // .slice(Math.max(dataMessages.length - 5, 0))
         //         .map((message) =>
         //           dataMessages.indexOf(message) === dataMessages.length - 1 ? (
-        //             <Zoom left collapse>
+        //             <Slide left collapse>
         //               <Paper
         //                 elevation={4}
         //                 style={{ margin: 32, width: "300px" }}
@@ -208,7 +213,7 @@ export default function Test() {
         //                   /> */}
         //                 </ListItem>
         //               </Paper>
-        //             </Zoom>
+        //             </Slide>
         //           ) : (
         //             <Paper
         //               elevation={4}
@@ -241,7 +246,7 @@ export default function Test() {
         //           )
         //         )}
         //     </List>
-        //   </Zoom>
+        //   </Slide>
         //   <form autoComplete="off" onSubmit={fetchData}>
         //     <TextField
         //       style={{ margin: "20px" }}
