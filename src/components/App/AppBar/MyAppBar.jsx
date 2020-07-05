@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Axios from "axios";
-import { Avatar } from "@material-ui/core";
+import { Avatar, IconButton } from "@material-ui/core";
 import Zoom from "react-reveal";
+import MessageIcon from "@material-ui/icons/Message";
+import InsertPhotoIcon from "@material-ui/icons/InsertPhoto";
 // import IconButton from "@material-ui/core/IconButton";
 // import HomeIcon from "@material-ui/icons/Home";
 // import HistoryIcon from '@material-ui/icons/History';
@@ -45,6 +47,21 @@ export default function MyAppBar() {
             style={{ width: "50px", height: "50px" }}
           />
         </Zoom>
+        <IconButton
+          style={{ marginLeft: "10px" }}
+          color="inherit"
+          aria-label="menu"
+        >
+          <MessageIcon />
+        </IconButton>
+        <IconButton
+          style={{ marginLeft: "10px" }}
+          color="inherit"
+          aria-label="menu"
+        >
+          <InsertPhotoIcon />
+        </IconButton>
+
         {/* <IconButton style={{marginLeft: "10px"}}  color="inherit" aria-label="menu">
           <HomeIcon />
         </IconButton>
