@@ -9,10 +9,13 @@ import {
   ListItemAvatar,
   Avatar,
   Grid,
+  ListItemSecondaryAction,
+  IconButton,
 } from "@material-ui/core";
 import Axios from "axios";
 import "./messenger.css";
 import { Redirect } from "react-router-dom";
+import DeleteIcon from "@material-ui/icons/Delete";
 import Slide from "react-reveal";
 
 export default function Test() {
@@ -21,6 +24,7 @@ export default function Test() {
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [UserId] = useState(window.localStorage.getItem("uuid"));
+  const [messageUuid, setmessageUuid] = useState("");
 
   useEffect(() => {
     getMessages();
@@ -105,6 +109,17 @@ export default function Test() {
                           primary={message.content || "message"}
                           secondary={message.user.pseudo}
                         />
+                        <ListItemSecondaryAction>
+                          <ListItemText>
+                            <IconButton
+                              onClick={() => setmessageUuid(message.uuid)}
+                              edge="end"
+                              aria-label="delete"
+                            >
+                              <DeleteIcon fontSize="small" />
+                            </IconButton>
+                          </ListItemText>
+                        </ListItemSecondaryAction>
                         {/* <ThumbUpIcon
            // onClick={onLike}
            color="disabled"
