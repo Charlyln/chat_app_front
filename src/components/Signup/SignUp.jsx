@@ -52,10 +52,9 @@ const SignUp = () => {
     );
   };
 
-  if (redirect && !open) {
+  if ((redirect && !open) || window.localStorage.getItem("uuid")) {
     return <Redirect to="/wall" />;
   }
-
   return (
     <>
       <AppBar position="static">
