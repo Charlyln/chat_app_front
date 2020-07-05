@@ -23,7 +23,6 @@ const SignUp = () => {
   const [redirect, setRedirect] = useState(false);
   const [open, setOpen] = useState(false);
   const [avatar, setAvatar] = useState("");
-  const [id] = useState(window.localStorage.getItem("uuid"));
 
   const handleClose = () => {
     setOpen(false);
@@ -53,7 +52,7 @@ const SignUp = () => {
     );
   };
 
-  if (redirect || id || window.localStorage.getItem("uuid")) {
+  if (redirect && !open) {
     return <Redirect to="/wall" />;
   }
 
