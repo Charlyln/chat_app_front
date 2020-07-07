@@ -22,27 +22,40 @@ const SignUp = () => {
   const [pseudo, setPseudo] = useState("");
   const [redirect, setRedirect] = useState(false);
   const [open, setOpen] = useState(false);
+  const [open2, setOpen2] = useState(false);
+  const [open3, setOpen3] = useState(false);
+  const [open4, setOpen4] = useState(false);
   const [avatar, setAvatar] = useState("");
 
   const handleClose = () => {
     setOpen(false);
-    setRedirect(true);
   };
 
   const Signup = async (e) => {
     e.preventDefault();
-    try {
-      const res = await axios.post(
-        "https://mychatappmessenger.herokuapp.com/users",
-        {
-          pseudo,
-          avatar,
-        }
-      );
-      window.localStorage.setItem("uuid", res.data.uuid);
-      setOpen(true);
-    } catch (err) {
-      console.log(err);
+    if (avatar && pseudo) {
+      try {
+        const res = await axios.post(
+          "https://mychatappmessenger.herokuapp.com/users",
+          {
+            pseudo,
+            avatar,
+          }
+        );
+        window.localStorage.setItem("uuid", res.data.uuid);
+        setOpen(true);
+        setTimeout(() => {
+          setRedirect(true);
+        }, 2000);
+      } catch (err) {
+        console.log(err);
+      }
+    } else if (pseudo && !avatar) {
+      setOpen2(true);
+    } else if (!pseudo && avatar) {
+      setOpen3(true);
+    } else {
+      setOpen4(true);
     }
   };
 
@@ -52,7 +65,7 @@ const SignUp = () => {
     );
   };
 
-  if ((redirect && !open) || window.localStorage.getItem("uuid")) {
+  if (redirect && window.localStorage.getItem("uuid")) {
     return <Redirect to="/wall" />;
   }
   return (
@@ -103,6 +116,42 @@ const SignUp = () => {
                 >
                   <Alert onClose={handleClose} severity="success">
                     Welcome {pseudo}
+                  </Alert>
+                </Snackbar>
+                <Snackbar
+                  open={open2}
+                  autoHideDuration={2000}
+                  onClose={() => setOpen2(false)}
+                >
+                  <Alert severity="info">
+                    Select a picture{" "}
+                    <span role="img" aria-label="donut">
+                      😀
+                    </span>
+                  </Alert>
+                </Snackbar>
+                <Snackbar
+                  open={open3}
+                  autoHideDuration={2000}
+                  onClose={() => setOpen3(false)}
+                >
+                  <Alert severity="info">
+                    Put your pseudo{" "}
+                    <span role="img" aria-label="donut">
+                      😀
+                    </span>
+                  </Alert>
+                </Snackbar>
+                <Snackbar
+                  open={open4}
+                  autoHideDuration={2000}
+                  onClose={() => setOpen4(false)}
+                >
+                  <Alert severity="info">
+                    Put your pseudo and select a picture{" "}
+                    <span role="img" aria-label="donut">
+                      😀
+                    </span>
                   </Alert>
                 </Snackbar>
               </Paper>
