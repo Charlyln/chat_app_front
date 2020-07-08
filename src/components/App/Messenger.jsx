@@ -21,6 +21,8 @@ export default function Test() {
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [UserId] = useState(window.localStorage.getItem("uuid"));
+  // const [firstMessage, setFirstMessage] = useState(false);
+
 
   useEffect(() => {
     getMessages();
@@ -28,20 +30,26 @@ export default function Test() {
 
   const getMessages = async () => {
     try {
-      // const UserId = window.localStorage.getItem("uuid");
       const res = await Axios.get(
         `https://mychatappmessenger.herokuapp.com/messages`
       );
       setdataMessages(res.data);
-      // const resUsers = await Axios.get(
-      //   `https://mychatappmessenger.herokuapp.com/users/${UserId}`
-      // );
-      // setUserData(resUsers.data);
       setIsLoading(false);
     } catch (err) {
       console.log(err);
     }
   };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      Axios.post("https://mychatappmessenger.herokuapp.com/messages", {
+        content:
+          "Hello, I am the chat bot, welcome to the chat app ! You can send messages and receive messages from your friends. Enjoy 😀 ",
+        userUuid: "a24aae34-9156-45e9-bca5-8584749a473b",
+      });
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -50,7 +58,7 @@ export default function Test() {
     return () => clearInterval(interval);
   }, []);
 
-  const fetchData = async (e) => {
+  const postMessage = async (e) => {
     e.preventDefault();
     try {
       const UserId = window.localStorage.getItem("uuid");
@@ -63,6 +71,7 @@ export default function Test() {
       );
       setdataMessages(res.data);
       setMessage("");
+      // setFirstMessage(true)
     } catch (err) {
       console.log(err);
     }
@@ -117,7 +126,7 @@ export default function Test() {
               </div>
             </Slide>
           </List>
-          <form autoComplete="off" onSubmit={fetchData}>
+          <form autoComplete="off" onSubmit={postMessage}>
             <TextField
               style={{ margin: "20px" }}
               id="message"
@@ -247,7 +256,7 @@ export default function Test() {
         //         )}
         //     </List>
         //   </Slide>
-        //   <form autoComplete="off" onSubmit={fetchData}>
+        //   <form autoComplete="off" onSubmit={postMessage}>
         //     <TextField
         //       style={{ margin: "20px" }}
         //       id="message"
