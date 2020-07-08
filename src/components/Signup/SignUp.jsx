@@ -20,7 +20,6 @@ function Alert(props) {
 
 const SignUp = () => {
   const [pseudo, setPseudo] = useState("");
-  const [redirect, setRedirect] = useState(false);
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
   const [open3, setOpen3] = useState(false);
@@ -44,9 +43,6 @@ const SignUp = () => {
         );
         window.localStorage.setItem("uuid", res.data.uuid);
         setOpen(true);
-        setTimeout(() => {
-          setRedirect(true);
-        }, 2000);
       } catch (err) {
         console.log(err);
       }
@@ -65,7 +61,7 @@ const SignUp = () => {
     );
   };
 
-  if (redirect && window.localStorage.getItem("uuid")) {
+  if (window.localStorage.getItem("uuid")) {
     return <Redirect to="/wall" />;
   }
   return (

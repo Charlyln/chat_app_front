@@ -9,11 +9,13 @@ import {
   ListItemAvatar,
   Avatar,
   Grid,
+  Snackbar,
 } from "@material-ui/core";
 import Axios from "axios";
 import "./messenger.css";
 import { Redirect } from "react-router-dom";
 import Slide from "react-reveal";
+import Alert from "@material-ui/lab/Alert";
 
 export default function Test() {
   const [dataMessages, setdataMessages] = useState([]);
@@ -21,11 +23,18 @@ export default function Test() {
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [UserId] = useState(window.localStorage.getItem("uuid"));
+  const [userdata, setuserdata] = useState("");
+  const [open, setOpen] = useState(true);
+
   // const [firstMessage, setFirstMessage] = useState(false);
 
+  const handleClose = (event, reason) => {
+    setOpen(false);
+  };
 
   useEffect(() => {
     getMessages();
+    getUser();
   }, []);
 
   const getMessages = async () => {
@@ -35,6 +44,18 @@ export default function Test() {
       );
       setdataMessages(res.data);
       setIsLoading(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getUser = async () => {
+    const id = window.localStorage.getItem("uuid");
+    try {
+      const res = await Axios.get(
+        `https://mychatappmessenger.herokuapp.com/users/${id}`
+      );
+      setuserdata(res.data);
     } catch (err) {
       console.log(err);
     }
@@ -179,6 +200,19 @@ export default function Test() {
                   🤘
                 </span>
               </Button>
+              <Snackbar
+                open={open}
+                autoHideDuration={5000}
+                onClose={handleClose}
+              >
+                <Alert
+                  onClose={handleClose}
+                  variant="filled"
+                  severity="success"
+                >
+                  Welcome {userdata.pseudo}
+                </Alert>
+              </Snackbar>
             </Grid>
           </form>
         </>
