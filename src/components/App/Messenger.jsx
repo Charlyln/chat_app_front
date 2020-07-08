@@ -40,16 +40,16 @@ export default function Test() {
     }
   };
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      Axios.post("https://mychatappmessenger.herokuapp.com/messages", {
-        content:
-          "Hello, I am the chat bot, welcome to the chat app ! You can send messages and receive messages from your friends. Enjoy 😀 ",
-        userUuid: "a24aae34-9156-45e9-bca5-8584749a473b",
-      });
-    }, 3000);
-    return () => clearTimeout(timer);
-  }, []);
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     Axios.post("https://mychatappmessenger.herokuapp.com/messages", {
+  //       content:
+  //         "Hello, I am the chat bot, welcome to the chat app ! You can send messages and receive messages from your friends. Enjoy 😀 ",
+  //       userUuid: "a24aae34-9156-45e9-bca5-8584749a473b",
+  //     });
+  //   }, 3000);
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
