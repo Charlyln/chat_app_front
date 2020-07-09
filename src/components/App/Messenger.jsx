@@ -304,7 +304,7 @@ export default function Test() {
             type="submit"
             variant="contained"
             color="primary"
-            style={{ margin: "20px" }}
+            style={{ margin: "27px 0px" }}
             disabled
             endIcon={<Icon>send</Icon>}
           >
