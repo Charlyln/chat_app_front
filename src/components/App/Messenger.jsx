@@ -342,10 +342,10 @@ export default function Test() {
             <Alert
               onClose={handleClose}
               severity="info"
-              style={{ width: "300px" }}
+              style={{ width: "330px" }}
             >
               Welcome to the chat app <strong>{userdata.pseudo}</strong> ! You
-              can send messages and receive messages from your friends. Enjoy
+              can send messages and receive messages from your friends. Enjoy{" "}
               <span role="img" aria-label="donut">
                 😀
               </span>
