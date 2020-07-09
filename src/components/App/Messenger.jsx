@@ -10,6 +10,7 @@ import {
   Avatar,
   Grid,
   Snackbar,
+  CircularProgress,
 } from "@material-ui/core";
 import Axios from "axios";
 import "./messenger.css";
@@ -103,7 +104,7 @@ export default function Test() {
   return (
     <>
       {isLoading ? (
-        <p>Loading</p>
+       <CircularProgress size={80} />
       ) : (
         <>
           <List style={{ width: "500px" }}>
@@ -210,7 +211,7 @@ export default function Test() {
                   variant="filled"
                   severity="success"
                 >
-                  Welcome {userdata.pseudo}
+                 {` Welcome ${userdata.pseudo}, `}
                 </Alert>
               </Snackbar>
             </Grid>
