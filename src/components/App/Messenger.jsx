@@ -10,9 +10,10 @@ import {
   Avatar,
   Grid,
   Snackbar,
-  CircularProgress,
+  Icon,
 } from "@material-ui/core";
 import Axios from "axios";
+import Skeleton from "@material-ui/lab/Skeleton";
 import "./messenger.css";
 import { Redirect } from "react-router-dom";
 import Slide from "react-reveal";
@@ -25,7 +26,8 @@ export default function Test() {
   const [message, setMessage] = useState("");
   const [UserId] = useState(window.localStorage.getItem("uuid"));
   const [userdata, setuserdata] = useState("");
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
+  const array = [1, 2, 3, 4, 5];
 
   // const [firstMessage, setFirstMessage] = useState(false);
 
@@ -36,6 +38,10 @@ export default function Test() {
   useEffect(() => {
     getMessages();
     getUser();
+    const timer = setTimeout(() => {
+      setOpen(true);
+    }, 5000);
+    return () => clearTimeout(timer);
   }, []);
 
   const getMessages = async () => {
@@ -44,7 +50,10 @@ export default function Test() {
         `https://mychatappmessenger.herokuapp.com/messages`
       );
       setdataMessages(res.data);
-      setIsLoading(false);
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+      }, 3000);
+      return () => clearTimeout(timer);
     } catch (err) {
       console.log(err);
     }
@@ -104,118 +113,63 @@ export default function Test() {
   return (
     <>
       {isLoading ? (
-       <CircularProgress size={80} />
-      ) : (
+        //  <CircularProgress size={80} />
         <>
           <List style={{ width: "500px" }}>
             <Slide top cascade>
-              <div>
-                {dataMessages
-                  .sort(function (a, b) {
-                    return new Date(a.createdAt) - new Date(b.createdAt);
-                  })
-                  .slice(Math.max(dataMessages.length - 5, 0))
-                  .map((message) => (
-                    <Paper
-                      elevation={4}
-                      style={{ margin: 32, width: "300px" }}
-                      className={
-                        message.userUuid === UserId ? "paperMe" : "paperOther"
-                      }
-                    >
-                      <ListItem
-                        alignItems="flex-start"
-                        className={
-                          message.userUuid === UserId ? "listMe" : "listOther"
-                        }
-                      >
-                        <ListItemAvatar>
-                          <Avatar alt="Temy Sharp" src={message.user.avatar} />
-                        </ListItemAvatar>
-                        <ListItemText
-                          primary={message.content || "message"}
-                          secondary={message.user.pseudo}
-                        />
-                        {/* <ThumbUpIcon
+              {array.map((el) => (
+                <ListItem alignItems="flex-start">
+                  <Skeleton
+                    variant="rect"
+                    width={300}
+                    height={72}
+                    className="paperOther"
+                    style={{ margin: "8px 16px" }}
+                  ></Skeleton>
+                </ListItem>
+              ))}
+            </Slide>
+          </List>
+        </>
+      ) : (
+        <>
+          <List style={{ width: "500px" }}>
+            {dataMessages
+              .sort(function (a, b) {
+                return new Date(a.createdAt) - new Date(b.createdAt);
+              })
+              .slice(Math.max(dataMessages.length - 5, 0))
+              .map((message) => (
+                <Paper
+                  elevation={4}
+                  style={{ margin: 32, width: "300px" }}
+                  className={
+                    message.userUuid === UserId ? "paperMe" : "paperOther"
+                  }
+                >
+                  <ListItem
+                    alignItems="flex-start"
+                    className={
+                      message.userUuid === UserId ? "listMe" : "listOther"
+                    }
+                  >
+                    <ListItemAvatar>
+                      <Avatar alt="Temy Sharp" src={message.user.avatar} />
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={message.content || "message"}
+                      secondary={message.user.pseudo}
+                    />
+                    {/* <ThumbUpIcon
            // onClick={onLike}
            color="disabled"
            fontSize="small"
            style={{ cursor: "pointer" }}
           /> */}
-                      </ListItem>
-                    </Paper>
-                  ))}
-              </div>
-            </Slide>
+                  </ListItem>
+                </Paper>
+              ))}
           </List>
-          <form autoComplete="off" onSubmit={postMessage}>
-            <TextField
-              style={{ margin: "20px" }}
-              id="message"
-              label="message"
-              variant="outlined"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              autoFocus="autofocus"
-            />
-
-            {message ? (
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                style={{ margin: "20px" }}
-              >
-                Send
-              </Button>
-            ) : (
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                style={{ margin: "20px" }}
-                disabled
-              >
-                Send
-              </Button>
-            )}
-            <Grid container alignItems="center" justify="center">
-              <Button type="button" onClick={() => setMessage(message + "😀")}>
-                <span role="img" aria-label="donut">
-                  😀
-                </span>
-              </Button>
-              <Button type="button" onClick={() => setMessage(message + "😍")}>
-                <span role="img" aria-label="donut">
-                  😍
-                </span>
-              </Button>
-              <Button type="button" onClick={() => setMessage(message + "🤣")}>
-                <span role="img" aria-label="donut">
-                  🤣
-                </span>
-              </Button>
-
-              <Button type="button" onClick={() => setMessage(message + "🤘")}>
-                <span role="img" aria-label="donut">
-                  🤘
-                </span>
-              </Button>
-              <Snackbar
-                open={open}
-                autoHideDuration={5000}
-                onClose={handleClose}
-              >
-                <Alert
-                  onClose={handleClose}
-                  variant="filled"
-                  severity="success"
-                >
-                 {` Welcome ${userdata.pseudo}, `}
-                </Alert>
-              </Snackbar>
-            </Grid>
-          </form>
         </>
         // <>
         //   <Slide left>
@@ -324,6 +278,81 @@ export default function Test() {
         //   </form>
         // </>
       )}
+      <form autoComplete="off" onSubmit={postMessage}>
+        <TextField
+          style={{ margin: "20px" }}
+          id="message"
+          label="message"
+          variant="outlined"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          autoFocus="autofocus"
+        />
+
+        {message ? (
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            style={{ margin: "20px" }}
+            endIcon={<Icon>send</Icon>}
+          >
+            Send
+          </Button>
+        ) : (
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            style={{ margin: "20px" }}
+            disabled
+            endIcon={<Icon>send</Icon>}
+          >
+            Send
+          </Button>
+        )}
+        <Grid container alignItems="center" justify="center">
+          <Button type="button" onClick={() => setMessage(message + "😀")}>
+            <span role="img" aria-label="donut">
+              😀
+            </span>
+          </Button>
+          <Button type="button" onClick={() => setMessage(message + "😍")}>
+            <span role="img" aria-label="donut">
+              😍
+            </span>
+          </Button>
+          <Button type="button" onClick={() => setMessage(message + "🤣")}>
+            <span role="img" aria-label="donut">
+              🤣
+            </span>
+          </Button>
+
+          <Button type="button" onClick={() => setMessage(message + "🤘")}>
+            <span role="img" aria-label="donut">
+              🤘
+            </span>
+          </Button>
+          <Snackbar
+            open={open}
+            autoHideDuration={5000}
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            onClose={handleClose}
+          >
+            <Alert
+              onClose={handleClose}
+              severity="info"
+              style={{ width: "300px" }}
+            >
+              Welcome to the chat app <strong>{userdata.pseudo}</strong> ! You
+              can send messages and receive messages from your friends. Enjoy
+              <span role="img" aria-label="donut">
+                😀
+              </span>
+            </Alert>
+          </Snackbar>
+        </Grid>
+      </form>
     </>
   );
 }
