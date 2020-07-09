@@ -25,7 +25,7 @@ export default function Test() {
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [UserId] = useState(window.localStorage.getItem("uuid"));
-  const [userdata, setuserdata] = useState("");
+  const [userdata, setuserdata] = useState([]);
   const [open, setOpen] = useState(false);
   const array = [1, 2, 3, 4, 5];
 
@@ -50,6 +50,7 @@ export default function Test() {
         `https://mychatappmessenger.herokuapp.com/messages`
       );
       setdataMessages(res.data);
+
       const timer = setTimeout(() => {
         setIsLoading(false);
       }, 3000);
@@ -333,37 +334,42 @@ export default function Test() {
               🤘
             </span>
           </Button>
-          <Snackbar
-            open={open}
-            autoHideDuration={5000}
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
-            onClose={handleClose}
-          >
-            {UserId ? (
-              <Alert
-                onClose={handleClose}
-                severity="info"
-                style={{ width: "330px" }}
-              >
-                Happy to see you again <strong>{userdata.pseudo}</strong> !{" "}
-                <span role="img" aria-label="donut">
-                  😀
-                </span>
-              </Alert>
-            ) : (
-              <Alert
-                onClose={handleClose}
-                severity="info"
-                style={{ width: "330px" }}
-              >
-                Welcome to the chat app <strong>{userdata.pseudo}</strong> ! You
-                can send messages and receive messages from your friends. Enjoy{" "}
-                <span role="img" aria-label="donut">
-                  😀
-                </span>
-              </Alert>
-            )}
-          </Snackbar>
+          {isLoading ? (
+            ""
+          ) : (
+            <Snackbar
+              open={open}
+              autoHideDuration={5000}
+              anchorOrigin={{ vertical: "top", horizontal: "right" }}
+              onClose={handleClose}
+            >
+              {userdata.messages.length > 0 ? (
+                <Alert
+                  onClose={handleClose}
+                  severity="info"
+                  style={{ width: "330px" }}
+                >
+                  Happy to see you again <strong>{userdata.pseudo}</strong> !{" "}
+                  <span role="img" aria-label="donut">
+                    😀
+                  </span>
+                </Alert>
+              ) : (
+                <Alert
+                  onClose={handleClose}
+                  severity="info"
+                  style={{ width: "330px" }}
+                >
+                  Welcome to the chat app <strong>{userdata.pseudo}</strong> !
+                  You can send messages and receive messages from your friends.
+                  Enjoy{" "}
+                  <span role="img" aria-label="donut">
+                    😀
+                  </span>
+                </Alert>
+              )}
+            </Snackbar>
+          )}
         </Grid>
       </form>
     </>
