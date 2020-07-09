@@ -339,17 +339,30 @@ export default function Test() {
             anchorOrigin={{ vertical: "top", horizontal: "right" }}
             onClose={handleClose}
           >
-            <Alert
-              onClose={handleClose}
-              severity="info"
-              style={{ width: "330px" }}
-            >
-              Welcome to the chat app <strong>{userdata.pseudo}</strong> ! You
-              can send messages and receive messages from your friends. Enjoy{" "}
-              <span role="img" aria-label="donut">
-                😀
-              </span>
-            </Alert>
+            {UserId ? (
+              <Alert
+                onClose={handleClose}
+                severity="info"
+                style={{ width: "330px" }}
+              >
+                Happy to see you again <strong>{userdata.pseudo}</strong> !{" "}
+                <span role="img" aria-label="donut">
+                  😀
+                </span>
+              </Alert>
+            ) : (
+              <Alert
+                onClose={handleClose}
+                severity="info"
+                style={{ width: "330px" }}
+              >
+                Welcome to the chat app <strong>{userdata.pseudo}</strong> ! You
+                can send messages and receive messages from your friends. Enjoy{" "}
+                <span role="img" aria-label="donut">
+                  😀
+                </span>
+              </Alert>
+            )}
           </Snackbar>
         </Grid>
       </form>
