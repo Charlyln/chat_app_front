@@ -11,6 +11,10 @@ import {
   Grid,
   Snackbar,
   Icon,
+  IconButton,
+  FormControlLabel,
+  Checkbox,
+  Fab,
 } from "@material-ui/core";
 import Axios from "axios";
 import Skeleton from "@material-ui/lab/Skeleton";
@@ -18,6 +22,9 @@ import "./messenger.css";
 import { Redirect } from "react-router-dom";
 import Slide from "react-reveal";
 import Alert from "@material-ui/lab/Alert";
+import ThumbUpAltIcon from "@material-ui/icons/ThumbUpAlt";
+import Favorite from "@material-ui/icons/Favorite";
+import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
 
 export default function Test() {
   const [dataMessages, setdataMessages] = useState([]);
@@ -27,6 +34,7 @@ export default function Test() {
   const [UserId] = useState(window.localStorage.getItem("uuid"));
   const [userdata, setuserdata] = useState([]);
   const [open, setOpen] = useState(false);
+  const [like, setLike] = useState(false);
   const array = [1, 2, 3, 4, 5];
 
   // const [firstMessage, setFirstMessage] = useState(false);
@@ -58,6 +66,29 @@ export default function Test() {
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const putLike = (e) => {
+    const id = e.target.id;
+    const nbLike = e.target.name;
+    console.log(nbLike);
+
+    setLike(!like);
+
+    if (!nbLike) {
+      Axios.put(`https://mychatappmessenger.herokuapp.com/messages/${id}`, {
+        likes: 1,
+      });
+    } else if (nbLike && like) {
+      Axios.put(`https://mychatappmessenger.herokuapp.com/messages/${id}`, {
+        likes: nbLike - 1,
+      });
+    } else {
+      Axios.put(
+        `https://mychatappmessenger.herokuapp.com/messages/${id}/click`
+      );
+    }
+    getMessages();
   };
 
   const getUser = async () => {
@@ -161,6 +192,20 @@ export default function Test() {
                       primary={message.content || "message"}
                       secondary={message.user.pseudo}
                     />
+
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          icon={<FavoriteBorder fontSize="small" />}
+                          checkedIcon={<Favorite fontSize="small" />}
+                          id={message.uuid}
+                          name={message.likes}
+                          onClick={putLike}
+                        />
+                      }
+                      label={message.likes || ""}
+                    />
+
                     {/* <ThumbUpIcon
            // onClick={onLike}
            color="disabled"
