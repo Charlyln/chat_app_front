@@ -31,7 +31,6 @@ export default function Messenger() {
   const [UserId] = useState(window.localStorage.getItem("uuid"));
   const [userdata, setuserdata] = useState([]);
   const [open, setOpen] = useState(false);
-  const [like, setLike] = useState(false);
   const array = [1, 2, 3, 4, 5];
 
   const handleClose = (event, reason) => {
