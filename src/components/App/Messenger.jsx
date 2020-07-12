@@ -34,7 +34,6 @@ export default function Messenger() {
   const [like, setLike] = useState(false);
   const array = [1, 2, 3, 4, 5];
 
-
   const handleClose = (event, reason) => {
     setOpen(false);
   };
@@ -64,27 +63,24 @@ export default function Messenger() {
     }
   };
 
-  const putLike = (e) => {
+  const putLike = async (e) => {
     const id = e.target.id;
-    const nbLike = e.target.name;
-    console.log(nbLike);
+    const likeObject = userdata.Likes.find((like) => like.MessageUuid === id);
+    if (likeObject) {
+      const likeId = likeObject.id;
 
-    setLike(!like);
-
-    if (!nbLike) {
-      Axios.put(`https://mychatappmessenger.herokuapp.com/messages/${id}`, {
-        likes: 1,
-      });
-    } else if (nbLike && like) {
-      Axios.put(`https://mychatappmessenger.herokuapp.com/messages/${id}`, {
-        likes: nbLike - 1,
-      });
-    } else {
-      Axios.put(
-        `https://mychatappmessenger.herokuapp.com/messages/${id}/click`
+      await Axios.delete(
+        `https://mychatappmessenger.herokuapp.com/likes/${likeId}`
       );
+    } else {
+      await Axios.post("https://mychatappmessenger.herokuapp.com/likes", {
+        MessageUuid: id,
+        UserUuid: UserId,
+      });
     }
+
     getMessages();
+    getUser();
   };
 
   const getUser = async () => {
@@ -98,8 +94,6 @@ export default function Messenger() {
       console.log(err);
     }
   };
-
- 
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -186,10 +180,19 @@ export default function Messenger() {
                           checkedIcon={<Favorite fontSize="small" />}
                           id={message.uuid}
                           name={message.likes}
-                          onClick={putLike}
+                          onChange={putLike}
+                          checked={
+                            message.Likes.find(
+                              (like) => like.UserUuid === UserId
+                            )
+                              ? true
+                              : false
+                          }
                         />
                       }
-                      label={message.likes || ""}
+                      label={
+                        message.Likes.length > 0 ? message.Likes.length : ""
+                      }
                     />
                   </ListItem>
                 </Paper>
