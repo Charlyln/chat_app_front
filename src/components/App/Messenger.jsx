@@ -93,7 +93,7 @@ export default function Messenger() {
       const res = await Axios.get(
         `https://mychatappmessenger.herokuapp.com/users/${id}`
       );
-      setuserdata(res.data[0]);
+      setuserdata(res.data);
     } catch (err) {
       console.log(err);
     }
