@@ -28,7 +28,7 @@ export default function MyAppBar() {
       const res = await Axios.get(
         `https://mychatappmessenger.herokuapp.com/users/${id}`
       );
-      setuserdata(res.data[0]);
+      setuserdata(res.data);
       setisLoading(false);
     } catch (err) {
       console.log(err);
