@@ -11,6 +11,8 @@ import {
   Grid,
   Snackbar,
   Icon,
+  FormControlLabel,
+  Checkbox,
 } from "@material-ui/core";
 import Axios from "axios";
 import Skeleton from "@material-ui/lab/Skeleton";
@@ -18,6 +20,8 @@ import "./messenger.css";
 import { Redirect } from "react-router-dom";
 import Slide from "react-reveal";
 import Alert from "@material-ui/lab/Alert";
+import Favorite from "@material-ui/icons/Favorite";
+import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
 
 export default function Test() {
   const [dataMessages, setdataMessages] = useState([]);
@@ -27,6 +31,7 @@ export default function Test() {
   const [UserId] = useState(window.localStorage.getItem("uuid"));
   const [userdata, setuserdata] = useState([]);
   const [open, setOpen] = useState(false);
+  const [like, setLike] = useState(false);
   const array = [1, 2, 3, 4, 5];
 
   // const [firstMessage, setFirstMessage] = useState(false);
@@ -60,13 +65,36 @@ export default function Test() {
     }
   };
 
+  const putLike = (e) => {
+    const id = e.target.id;
+    const nbLike = e.target.name;
+    console.log(nbLike);
+
+    setLike(!like);
+
+    if (!nbLike) {
+      Axios.put(`https://mychatappmessenger.herokuapp.com/messages/${id}`, {
+        likes: 1,
+      });
+    } else if (nbLike && like) {
+      Axios.put(`https://mychatappmessenger.herokuapp.com/messages/${id}`, {
+        likes: nbLike - 1,
+      });
+    } else {
+      Axios.put(
+        `https://mychatappmessenger.herokuapp.com/messages/${id}/click`
+      );
+    }
+    getMessages();
+  };
+
   const getUser = async () => {
     const id = window.localStorage.getItem("uuid");
     try {
       const res = await Axios.get(
         `https://mychatappmessenger.herokuapp.com/users/${id}`
       );
-      setuserdata(res.data);
+      setuserdata(res.data[0]);
     } catch (err) {
       console.log(err);
     }
@@ -77,7 +105,7 @@ export default function Test() {
   //     Axios.post("https://mychatappmessenger.herokuapp.com/messages", {
   //       content:
   //         "Hello, I am the chat bot, welcome to the chat app ! You can send messages and receive messages from your friends. Enjoy 😀 ",
-  //       userUuid: "a24aae34-9156-45e9-bca5-8584749a473b",
+  //       UserUuid: "a24aae34-9156-45e9-bca5-8584749a473b",
   //     });
   //   }, 3000);
   //   return () => clearTimeout(timer);
@@ -96,7 +124,7 @@ export default function Test() {
       const UserId = window.localStorage.getItem("uuid");
       await Axios.post("https://mychatappmessenger.herokuapp.com/messages", {
         content: message,
-        userUuid: UserId,
+        UserUuid: UserId,
       });
       const res = await Axios.get(
         `https://mychatappmessenger.herokuapp.com/messages`
@@ -114,7 +142,6 @@ export default function Test() {
   return (
     <>
       {isLoading ? (
-        //  <CircularProgress size={80} />
         <>
           <List style={{ width: "500px" }}>
             <Slide top cascade>
@@ -145,28 +172,35 @@ export default function Test() {
                   elevation={4}
                   style={{ margin: 32, width: "300px" }}
                   className={
-                    message.userUuid === UserId ? "paperMe" : "paperOther"
+                    message.UserUuid === UserId ? "paperMe" : "paperOther"
                   }
                 >
                   <ListItem
                     alignItems="flex-start"
                     className={
-                      message.userUuid === UserId ? "listMe" : "listOther"
+                      message.UserUuid === UserId ? "listMe" : "listOther"
                     }
                   >
                     <ListItemAvatar>
-                      <Avatar alt="Temy Sharp" src={message.user.avatar} />
+                      <Avatar alt="Temy Sharp" src={message.User.avatar} />
                     </ListItemAvatar>
                     <ListItemText
                       primary={message.content || "message"}
-                      secondary={message.user.pseudo}
+                      secondary={message.User.pseudo}
                     />
-                    {/* <ThumbUpIcon
-           // onClick={onLike}
-           color="disabled"
-           fontSize="small"
-           style={{ cursor: "pointer" }}
-          /> */}
+
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          icon={<FavoriteBorder fontSize="small" />}
+                          checkedIcon={<Favorite fontSize="small" />}
+                          id={message.uuid}
+                          name={message.likes}
+                          onClick={putLike}
+                        />
+                      }
+                      label={message.likes || ""}
+                    />
                   </ListItem>
                 </Paper>
               ))}
@@ -176,7 +210,7 @@ export default function Test() {
         //   <Slide left>
         //     <List style={{ width: "500px" }}>
         //       {dataMessages
-        //         // .filter((message) => message.userUuid === UserId)
+        //         // .filter((message) => message.UserUuid === UserId)
         //         .sort(function (a, b) {
         //           return new Date(a.createdAt) - new Date(b.createdAt);
         //         })
@@ -188,21 +222,21 @@ export default function Test() {
         //                 elevation={4}
         //                 style={{ margin: 32, width: "300px" }}
         //                 className={
-        //                   message.userUuid === UserId ? "paperMe" : "paperOther"
+        //                   message.UserUuid === UserId ? "paperMe" : "paperOther"
         //                 }
         //               >
         //                 <ListItem
         //                   alignItems="flex-start"
         //                   className={
-        //                     message.userUuid === UserId ? "listMe" : "listOther"
+        //                     message.UserUuid === UserId ? "listMe" : "listOther"
         //                   }
         //                 >
         //                   {/* <ListItemAvatar>
-        //                     <Avatar alt="Temy Sharp" src={message.user.avatar} />
+        //                     <Avatar alt="Temy Sharp" src={U.avatar} />
         //                   </ListItemAvatar> */}
         //                   <ListItemText
         //                     primary={message.content}
-        //                     secondary={message.user.pseudo}
+        //                     secondary={U.pseudo}
         //                   />
         //                   {/* <ThumbUpIcon
         //                     // onClick={onLike}
@@ -218,21 +252,21 @@ export default function Test() {
         //               elevation={4}
         //               style={{ margin: 32, width: "300px" }}
         //               className={
-        //                 message.userUuid === UserId ? "paperMe" : "paperOther"
+        //                 message.UserUuid === UserId ? "paperMe" : "paperOther"
         //               }
         //             >
         //               <ListItem
         //                 alignItems="flex-start"
         //                 className={
-        //                   message.userUuid === UserId ? "listMe" : "listOther"
+        //                   message.UserUuid === UserId ? "listMe" : "listOther"
         //                 }
         //               >
         //                 {/* <ListItemAvatar>
-        //                   <Avatar alt="Temy Sharp" src={message.user.avatar} />
+        //                   <Avatar alt="Temy Sharp" src={U.avatar} />
         //                 </ListItemAvatar> */}
         //                 <ListItemText
         //                   primary={message.content}
-        //                   secondary={message.user.pseudo}
+        //                   secondary={U.pseudo}
         //                 />
         //                 {/* <ThumbUpIcon
         //                   // onClick={onLike}
@@ -295,7 +329,7 @@ export default function Test() {
             type="submit"
             variant="contained"
             color="primary"
-            style={{ margin: "27px 0px" }}
+            style={{ margin: "20px" }}
             endIcon={<Icon>send</Icon>}
           >
             Send
@@ -328,7 +362,6 @@ export default function Test() {
               🤣
             </span>
           </Button>
-
           <Button type="button" onClick={() => setMessage(message + "🤘")}>
             <span role="img" aria-label="donut">
               🤘
@@ -343,8 +376,7 @@ export default function Test() {
               anchorOrigin={{ vertical: "top", horizontal: "right" }}
               onClose={handleClose}
             >
-              {userdata.messages.length > 0 ? (
-                <Alert
+              {/* <Alert
                   onClose={handleClose}
                   severity="info"
                   style={{ width: "330px" }}
@@ -353,23 +385,21 @@ export default function Test() {
                   <span role="img" aria-label="donut">
                     😀
                   </span>
-                </Alert>
-              ) : (
-                <Alert
-                  onClose={handleClose}
-                  severity="info"
-                  style={{ width: "330px" }}
-                >
-                  Welcome to the chat app <strong>{userdata.pseudo}</strong> !
-                  You can send messages and receive messages from your friends.
-                  Enjoy{" "}
-                  <span role="img" aria-label="donut">
-                    😀
-                  </span>
-                </Alert>
-              )}
+                </Alert> */}
+
+              <Alert
+                onClose={handleClose}
+                severity="info"
+                style={{ width: "330px" }}
+              >
+                Welcome to the chat app <strong>{userdata.pseudo}</strong> ! You
+                can send messages and receive messages from your friends. Enjoy{" "}
+                <span role="img" aria-label="donut">
+                  😀
+                </span>
+              </Alert>
             </Snackbar>
-          )}
+          )}{" "}
         </Grid>
       </form>
     </>
