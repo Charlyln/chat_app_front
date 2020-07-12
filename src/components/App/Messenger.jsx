@@ -23,7 +23,7 @@ import Alert from "@material-ui/lab/Alert";
 import Favorite from "@material-ui/icons/Favorite";
 import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
 
-export default function Test() {
+export default function Messenger() {
   const [dataMessages, setdataMessages] = useState([]);
   // const [userData, setUserData] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -34,7 +34,6 @@ export default function Test() {
   const [like, setLike] = useState(false);
   const array = [1, 2, 3, 4, 5];
 
-  // const [firstMessage, setFirstMessage] = useState(false);
 
   const handleClose = (event, reason) => {
     setOpen(false);
@@ -100,16 +99,7 @@ export default function Test() {
     }
   };
 
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     Axios.post("https://mychatappmessenger.herokuapp.com/messages", {
-  //       content:
-  //         "Hello, I am the chat bot, welcome to the chat app ! You can send messages and receive messages from your friends. Enjoy 😀 ",
-  //       UserUuid: "a24aae34-9156-45e9-bca5-8584749a473b",
-  //     });
-  //   }, 3000);
-  //   return () => clearTimeout(timer);
-  // }, []);
+ 
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -329,7 +319,7 @@ export default function Test() {
             type="submit"
             variant="contained"
             color="primary"
-            style={{ margin: "20px" }}
+            style={{ margin: "27px 0px" }}
             endIcon={<Icon>send</Icon>}
           >
             Send
