@@ -13,6 +13,7 @@ import MuiAlert from "@material-ui/lab/Alert";
 import { Redirect } from "react-router-dom";
 import Axios from "axios";
 import { Toolbar, AppBar } from "@material-ui/core";
+import { apiUrl } from "../../apiUrl";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -34,13 +35,10 @@ const SignUp = () => {
     e.preventDefault();
     if (avatar && pseudo) {
       try {
-        const res = await axios.post(
-          "https://mychatappmessenger.herokuapp.com/users",
-          {
-            pseudo,
-            avatar,
-          }
-        );
+        const res = await axios.post(`${apiUrl}/users`, {
+          pseudo,
+          avatar,
+        });
         window.localStorage.setItem("uuid", res.data.uuid);
         setOpen(true);
       } catch (err) {

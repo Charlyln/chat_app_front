@@ -22,6 +22,7 @@ import Slide from "react-reveal";
 import Alert from "@material-ui/lab/Alert";
 import Favorite from "@material-ui/icons/Favorite";
 import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
+import { apiUrl } from "../../apiUrl";
 
 export default function Messenger() {
   const [dataMessages, setdataMessages] = useState([]);
@@ -32,6 +33,20 @@ export default function Messenger() {
   const [userdata, setuserdata] = useState([]);
   const [open, setOpen] = useState(false);
   const array = [1, 2, 3, 4, 5];
+  const emojis = [
+    {
+      logo: "😀",
+    },
+    {
+      logo: "😍",
+    },
+    {
+      logo: "🤣",
+    },
+    {
+      logo: "🤘",
+    },
+  ];
 
   const handleClose = (event, reason) => {
     setOpen(false);
@@ -48,9 +63,7 @@ export default function Messenger() {
 
   const getMessages = async () => {
     try {
-      const res = await Axios.get(
-        `https://mychatappmessenger.herokuapp.com/messages`
-      );
+      const res = await Axios.get(`${apiUrl}/messages`);
       setdataMessages(res.data);
 
       const timer = setTimeout(() => {
@@ -68,11 +81,9 @@ export default function Messenger() {
     if (likeObject) {
       const likeId = likeObject.id;
 
-      await Axios.delete(
-        `https://mychatappmessenger.herokuapp.com/likes/${likeId}`
-      );
+      await Axios.delete(`${apiUrl}/likes/${likeId}`);
     } else {
-      await Axios.post("https://mychatappmessenger.herokuapp.com/likes", {
+      await Axios.post(`${apiUrl}/likes`, {
         MessageUuid: id,
         UserUuid: UserId,
       });
@@ -85,9 +96,7 @@ export default function Messenger() {
   const getUser = async () => {
     const id = window.localStorage.getItem("uuid");
     try {
-      const res = await Axios.get(
-        `https://mychatappmessenger.herokuapp.com/users/${id}`
-      );
+      const res = await Axios.get(`${apiUrl}/users/${id}`);
       setuserdata(res.data);
     } catch (err) {
       console.log(err);
@@ -105,13 +114,11 @@ export default function Messenger() {
     e.preventDefault();
     try {
       const UserId = window.localStorage.getItem("uuid");
-      await Axios.post("https://mychatappmessenger.herokuapp.com/messages", {
+      await Axios.post(`${apiUrl}/messages`, {
         content: message,
         UserUuid: UserId,
       });
-      const res = await Axios.get(
-        `https://mychatappmessenger.herokuapp.com/messages`
-      );
+      const res = await Axios.get(`${apiUrl}/messages`);
       setdataMessages(res.data);
       setMessage("");
       // setFirstMessage(true)
@@ -198,112 +205,6 @@ export default function Messenger() {
               ))}
           </List>
         </>
-        // <>
-        //   <Slide left>
-        //     <List style={{ width: "500px" }}>
-        //       {dataMessages
-        //         // .filter((message) => message.UserUuid === UserId)
-        //         .sort(function (a, b) {
-        //           return new Date(a.createdAt) - new Date(b.createdAt);
-        //         })
-        //         // .slice(Math.max(dataMessages.length - 5, 0))
-        //         .map((message) =>
-        //           dataMessages.indexOf(message) === dataMessages.length - 1 ? (
-        //             <Slide left collapse>
-        //               <Paper
-        //                 elevation={4}
-        //                 style={{ margin: 32, width: "300px" }}
-        //                 className={
-        //                   message.UserUuid === UserId ? "paperMe" : "paperOther"
-        //                 }
-        //               >
-        //                 <ListItem
-        //                   alignItems="flex-start"
-        //                   className={
-        //                     message.UserUuid === UserId ? "listMe" : "listOther"
-        //                   }
-        //                 >
-        //                   {/* <ListItemAvatar>
-        //                     <Avatar alt="Temy Sharp" src={U.avatar} />
-        //                   </ListItemAvatar> */}
-        //                   <ListItemText
-        //                     primary={message.content}
-        //                     secondary={U.pseudo}
-        //                   />
-        //                   {/* <ThumbUpIcon
-        //                     // onClick={onLike}
-        //                     color="disabled"
-        //                     fontSize="small"
-        //                     style={{ cursor: "pointer" }}
-        //                   /> */}
-        //                 </ListItem>
-        //               </Paper>
-        //             </Slide>
-        //           ) : (
-        //             <Paper
-        //               elevation={4}
-        //               style={{ margin: 32, width: "300px" }}
-        //               className={
-        //                 message.UserUuid === UserId ? "paperMe" : "paperOther"
-        //               }
-        //             >
-        //               <ListItem
-        //                 alignItems="flex-start"
-        //                 className={
-        //                   message.UserUuid === UserId ? "listMe" : "listOther"
-        //                 }
-        //               >
-        //                 {/* <ListItemAvatar>
-        //                   <Avatar alt="Temy Sharp" src={U.avatar} />
-        //                 </ListItemAvatar> */}
-        //                 <ListItemText
-        //                   primary={message.content}
-        //                   secondary={U.pseudo}
-        //                 />
-        //                 {/* <ThumbUpIcon
-        //                   // onClick={onLike}
-        //                   color="disabled"
-        //                   fontSize="small"
-        //                   style={{ cursor: "pointer" }}
-        //                 /> */}
-        //               </ListItem>
-        //             </Paper>
-        //           )
-        //         )}
-        //     </List>
-        //   </Slide>
-        //   <form autoComplete="off" onSubmit={postMessage}>
-        //     <TextField
-        //       style={{ margin: "20px" }}
-        //       id="message"
-        //       label="message"
-        //       variant="outlined"
-        //       value={message}
-        //       onChange={(e) => setMessage(e.target.value)}
-        //       autoFocus="autofocus"
-        //     />
-        //     {message ? (
-        //       <Button
-        //         type="submit"
-        //         variant="contained"
-        //         color="primary"
-        //         style={{ margin: "20px" }}
-        //       >
-        //         Send
-        //       </Button>
-        //     ) : (
-        //       <Button
-        //         type="submit"
-        //         variant="contained"
-        //         color="primary"
-        //         style={{ margin: "20px" }}
-        //         disabled
-        //       >
-        //         Send
-        //       </Button>
-        //     )}
-        //   </form>
-        // </>
       )}
       <form autoComplete="off" onSubmit={postMessage}>
         <TextField
@@ -315,50 +216,28 @@ export default function Messenger() {
           onChange={(e) => setMessage(e.target.value)}
           autoFocus="autofocus"
         />
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          disabled={!message}
+          style={{ margin: "27px 0px" }}
+          endIcon={<Icon>send</Icon>}
+        >
+          Send
+        </Button>
 
-        {message ? (
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            style={{ margin: "27px 0px" }}
-            endIcon={<Icon>send</Icon>}
-          >
-            Send
-          </Button>
-        ) : (
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            style={{ margin: "27px 0px" }}
-            disabled
-            endIcon={<Icon>send</Icon>}
-          >
-            Send
-          </Button>
-        )}
         <Grid container alignItems="center" justify="center">
-          <Button type="button" onClick={() => setMessage(message + "😀")}>
-            <span role="img" aria-label="donut">
-              😀
-            </span>
-          </Button>
-          <Button type="button" onClick={() => setMessage(message + "😍")}>
-            <span role="img" aria-label="donut">
-              😍
-            </span>
-          </Button>
-          <Button type="button" onClick={() => setMessage(message + "🤣")}>
-            <span role="img" aria-label="donut">
-              🤣
-            </span>
-          </Button>
-          <Button type="button" onClick={() => setMessage(message + "🤘")}>
-            <span role="img" aria-label="donut">
-              🤘
-            </span>
-          </Button>
+          {emojis.map((emoji) => (
+            <Button
+              type="button"
+              onClick={() => setMessage(message + emoji.logo)}
+            >
+              <span role="img" aria-label="donut">
+                {emoji.logo}
+              </span>
+            </Button>
+          ))}
           {isLoading ? (
             ""
           ) : (
