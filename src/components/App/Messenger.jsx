@@ -57,7 +57,7 @@ export default function Messenger() {
     getUser();
     const timer = setTimeout(() => {
       setOpen(true);
-    }, 5000);
+    }, 2000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -68,7 +68,7 @@ export default function Messenger() {
 
       const timer = setTimeout(() => {
         setIsLoading(false);
-      }, 3000);
+      }, 2000);
       return () => clearTimeout(timer);
     } catch (err) {
       console.log(err);
