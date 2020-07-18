@@ -39,7 +39,7 @@ export default function MyAppBar() {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="fixed">
       <Toolbar>
         <Zoom top>
           <Avatar
