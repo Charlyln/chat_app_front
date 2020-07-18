@@ -5,8 +5,12 @@ import Axios from "axios";
 import { Avatar } from "@material-ui/core";
 import Zoom from "react-reveal";
 import { apiUrl } from "../../../apiUrl";
-// import IconButton from "@material-ui/core/IconButton";
-// import HomeIcon from "@material-ui/icons/Home";
+import IconButton from "@material-ui/core/IconButton";
+import HomeIcon from "@material-ui/icons/Home";
+import { Link } from "react-router-dom";
+import GroupAddIcon from "@material-ui/icons/GroupAdd";
+import QuestionAnswerIcon from "@material-ui/icons/QuestionAnswer";
+
 // import HistoryIcon from '@material-ui/icons/History';
 // import AccountCircle from "@material-ui/icons/AccountCircle";
 // import { Badge } from "@material-ui/core";
@@ -26,9 +30,7 @@ export default function MyAppBar() {
     const id = window.localStorage.getItem("uuid");
 
     try {
-      const res = await Axios.get(
-        `${apiUrl}/users/${id}`
-      );
+      const res = await Axios.get(`${apiUrl}/users/${id}`);
       setuserdata(res.data);
       setisLoading(false);
     } catch (err) {
@@ -46,7 +48,27 @@ export default function MyAppBar() {
             style={{ width: "50px", height: "50px" }}
           />
         </Zoom>
-        {/* <IconButton style={{marginLeft: "10px"}}  color="inherit" aria-label="menu">
+        <Link to="/wall">
+          <IconButton
+            style={{ marginLeft: "10px" }}
+            color="white"
+            aria-label="menu"
+          >
+            <HomeIcon />
+          </IconButton>
+        </Link>
+        <Link to="/users">
+          <IconButton color="white" aria-label="menu">
+            <GroupAddIcon />
+          </IconButton>
+        </Link>
+        <Link to="/messenger">
+          <IconButton color="white" aria-label="menu">
+            <QuestionAnswerIcon />
+          </IconButton>
+        </Link>
+
+        {/* <IconButton style={{marginLeft: "10px"}}  color="primary" aria-label="menu">
           <HomeIcon />
         </IconButton>
         <IconButton  color="inherit" aria-label="menu">
