@@ -13,8 +13,6 @@ import {
   MuiThemeProvider,
   Grid,
   Button,
-  FormControlLabel,
-  Checkbox,
 } from "@material-ui/core";
 
 export default function Users() {
@@ -22,6 +20,8 @@ export default function Users() {
   const [UserId] = useState(window.localStorage.getItem("uuid"));
   const [usersdata, setusersdata] = useState([]);
   const [userdata, setuserdata] = useState([]);
+  const [follow, setFollow] = useState("");
+  const [followId, setFollowId] = useState("");
 
   useEffect(() => {
     getUsers();
@@ -48,22 +48,30 @@ export default function Users() {
   };
 
   const postFollow = async (e) => {
-    const UserUuid2 = e.target.id;
-    const likeObject = userdata.Followers.find((user) => user.UserUuid === UserUuid2);
-    
-    console.log(UserUuid2);
+    e.preventDefault();
+    console.log(follow);
 
-    console.log(likeObject);
+    try {
+      const res = await Axios.post(`${apiUrl}/followers`, {
+        UserUuid: follow,
+        followerId: UserId,
+      });
+      getUsers();
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-    // try {
-    //   const res = await Axios.post(`${apiUrl}/followers`, {
-    //     UserUuid,
-    //     followerId: UserId,
-    //   });
-    //   getUsers();
-    // } catch (err) {
-    //   console.log(err);
-    // }
+  const deleteFollow = async (e) => {
+    e.preventDefault();
+    const followerId = followId.id;
+
+    try {
+      const res = await Axios.delete(`${apiUrl}/followers/${followerId}`);
+      getUsers();
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   if (!window.localStorage.getItem("uuid")) {
@@ -77,51 +85,59 @@ export default function Users() {
           <Grid item xs={12}>
             <Grid container alignItems="center" justify="center">
               <List style={{ width: "500px" }}>
-                {usersdata.map((user) => (
-                  <Paper elevation={4} style={{ margin: 32, width: "300px" }}>
-                    <ListItem alignItems="flex-start">
-                      <ListItemAvatar>
-                        <Avatar alt="Temy Sharp" src={user.avatar} />
-                      </ListItemAvatar>
-                      <ListItemText primary={user.pseudo} />
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={
-                              user.Followers.find(
-                                (follower) => follower.followerId === UserId
-                              )
-                                ? true
-                                : false
-                            }
-                            onChange={postFollow}
-                            icon={
-                              <Button
-                                onClick={postFollow}
-                                size="small"
-                                variant="contained"
-                                color="primary"
-                              >
-                                Follow
-                              </Button>
-                            }
-                            checkedIcon={
-                              <Button
-                                onClick={postFollow}
-                                size="small"
-                                variant="contained"
-                                color="secondary"
-                              >
-                                I Follow
-                              </Button>
-                            }
-                            id={user.uuid}
-                          />
-                        }
-                      />
-                    </ListItem>
-                  </Paper>
-                ))}
+                {usersdata
+                  .sort(function (a, b) {
+                    return new Date(a.createdAt) - new Date(b.createdAt);
+                  })
+                  .map((user) => (
+                    <Paper elevation={4} style={{ margin: 32, width: "300px" }}>
+                      <ListItem alignItems="flex-start">
+                        <ListItemAvatar>
+                          <Avatar alt="Temy Sharp" src={user.avatar} />
+                        </ListItemAvatar>
+                        <ListItemText
+                          primary={user.pseudo}
+                          secondary={`${user.Followers.length} ${
+                            user.Followers.length < 2 ? "follower" : "followers"
+                          }`}
+                        />
+
+                        {user.Followers.find(
+                          (follower) => follower.followerId === UserId
+                        ) ? (
+                          <form onSubmit={deleteFollow}>
+                            <Button
+                              onClick={() =>
+                                setFollowId(
+                                  user.Followers.find(
+                                    (follow) => follow.followerId === UserId
+                                  )
+                                )
+                              }
+                              size="small"
+                              variant="contained"
+                              color="secondary"
+                              type="submit"
+                            >
+                              I Follow
+                            </Button>
+                          </form>
+                        ) : (
+                          <form onSubmit={postFollow}>
+                            <Button
+                              onClick={() => setFollow(user.uuid)}
+                              size="small"
+                              variant="contained"
+                              color="primary"
+                              type="submit"
+                            >
+                              Follow
+                            </Button>
+                          </form>
+                        )}
+                      </ListItem>
+                    </Paper>
+                  ))}
               </List>
             </Grid>
           </Grid>
