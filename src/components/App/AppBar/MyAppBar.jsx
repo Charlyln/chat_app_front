@@ -48,7 +48,7 @@ export default function MyAppBar() {
             style={{ width: "50px", height: "50px" }}
           />
         </Zoom>
-        <Link to="/wall">
+        <Link to="/posts">
           <IconButton
             style={{ marginLeft: "10px" }}
             color="white"
