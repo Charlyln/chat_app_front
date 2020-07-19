@@ -5,7 +5,6 @@ import SignUp from "./components/Signup/SignUp";
 import Users from "./components/App/Users";
 import Posts from "./components/App/Posts";
 import Messenger from "./components/App/Messenger";
-import Crash from "./Crash";
 
 const App = () => {
   return (

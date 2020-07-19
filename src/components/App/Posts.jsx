@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 import {
   TextField,
   Button,
@@ -10,7 +8,6 @@ import {
   Snackbar,
   Icon,
   CardHeader,
-  MuiThemeProvider,
   Card,
   CardMedia,
   CardContent,
@@ -20,12 +17,9 @@ import {
   FormControlLabel,
   Checkbox,
 } from "@material-ui/core";
-import FavoriteIcon from "@material-ui/icons/Favorite";
 import Axios from "axios";
-import Skeleton from "@material-ui/lab/Skeleton";
 import "./messenger.css";
 import { Redirect } from "react-router-dom";
-import Slide from "react-reveal";
 import Alert from "@material-ui/lab/Alert";
 import Favorite from "@material-ui/icons/Favorite";
 import PhotoCamera from "@material-ui/icons/PhotoCamera";
@@ -44,7 +38,6 @@ export default function Posts() {
   const [UserId] = useState(window.localStorage.getItem("uuid"));
   const [userdata, setuserdata] = useState([]);
   const [open, setOpen] = useState(false);
-  const array = [1, 2, 3, 4, 5];
   const [logo, setLogo] = useState("");
 
   const handleLogo = (e) => {

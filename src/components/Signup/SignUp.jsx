@@ -1,22 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import {
-  TextField,
-  Button,
-  Snackbar,
-  Paper,
-  Avatar,
-  IconButton,
-  Grid,
-  ButtonGroup,
-  Typography,
-} from "@material-ui/core";
+import { TextField, Button, Snackbar, Avatar, Grid } from "@material-ui/core";
 import MuiAlert from "@material-ui/lab/Alert";
 import { Redirect } from "react-router-dom";
 import Axios from "axios";
 import { Toolbar, AppBar } from "@material-ui/core";
 import { apiUrl } from "../../apiUrl";
-import PhotoCamera from "@material-ui/icons/PhotoCamera";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import PersonIcon from "@material-ui/icons/Person";
 
@@ -30,7 +19,6 @@ const SignUp = () => {
   const [open2, setOpen2] = useState(false);
   const [open3, setOpen3] = useState(false);
   const [open4, setOpen4] = useState(false);
-  const [avatar, setAvatar] = useState("");
   const [logo, setLogo] = useState("");
   const [myAvatar, setMyAvatar] = useState("");
   const [isLoading, setisLoading] = useState(true);
@@ -80,15 +68,15 @@ const SignUp = () => {
           avatar: logo,
         });
         window.localStorage.setItem("uuid", res.data.uuid);
-        const res2 = await axios.post(`${apiUrl}/followers`, {
+        await axios.post(`${apiUrl}/followers`, {
           UserUuid: res.data.uuid,
           followerId: res.data.uuid,
         });
-        getUser()
+        getUser();
         setOpen(true);
-      } else if (pseudo && !avatar) {
+      } else if (pseudo && !logo) {
         setOpen2(true);
-      } else if (!pseudo && avatar) {
+      } else if (!pseudo && logo) {
         setOpen3(true);
       } else {
         setOpen4(true);

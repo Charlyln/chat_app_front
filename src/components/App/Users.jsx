@@ -12,7 +12,6 @@ import {
   Paper,
   ListItemAvatar,
   Avatar,
-  MuiThemeProvider,
   Grid,
   Button,
   IconButton,
@@ -26,7 +25,6 @@ export default function Users() {
   const [isLoading, setIsLoading] = useState(true);
   const [UserId] = useState(window.localStorage.getItem("uuid"));
   const [usersdata, setusersdata] = useState([]);
-  const [userdata, setuserdata] = useState([]);
   const [follow, setFollow] = useState("");
   const [followId, setFollowId] = useState("");
   const [open, setOpen] = useState(false);
@@ -35,7 +33,6 @@ export default function Users() {
 
   useEffect(() => {
     getUsers();
-    getUser();
   }, []);
 
   const getUsers = async () => {
@@ -59,22 +56,12 @@ export default function Users() {
     setOpen(false);
   };
 
-  const getUser = async () => {
-    const id = window.localStorage.getItem("uuid");
-    try {
-      const res = await Axios.get(`${apiUrl}/users/${id}`);
-      setuserdata(res.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   const postFollow = async (e) => {
     e.preventDefault();
     console.log(follow);
 
     try {
-      const res = await Axios.post(`${apiUrl}/followers`, {
+      await Axios.post(`${apiUrl}/followers`, {
         UserUuid: follow,
         followerId: UserId,
       });
@@ -89,7 +76,7 @@ export default function Users() {
     const followerId = followId.id;
 
     try {
-      const res = await Axios.delete(`${apiUrl}/followers/${followerId}`);
+      await Axios.delete(`${apiUrl}/followers/${followerId}`);
       getUsers();
     } catch (err) {
       console.log(err);
@@ -157,7 +144,6 @@ export default function Users() {
                                 : "followers"
                             }`}
                           />
-                         
 
                           {user.Followers.find(
                             (follower) => follower.followerId === UserId

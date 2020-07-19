@@ -14,7 +14,6 @@ import {
   FormControlLabel,
   Checkbox,
   IconButton,
-  MuiThemeProvider,
 } from "@material-ui/core";
 import Axios from "axios";
 import Skeleton from "@material-ui/lab/Skeleton";
