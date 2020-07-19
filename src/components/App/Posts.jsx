@@ -116,7 +116,7 @@ export default function Posts() {
 
   const sendPost = async (e) => {
     e.preventDefault();
-    const imgurToken = "475e9a2812bbf24";
+    const imgurToken = "44670bbff769f1a";
 
     try {
       if (logo) {
@@ -162,7 +162,7 @@ export default function Posts() {
                 variant="outlined"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                autoFocus="autofocus"
+                
               />
               <input
                 accept="image/*"
@@ -197,35 +197,17 @@ export default function Posts() {
                 Send
               </Button>
 
-              {/* {emojis.map((emoji) => (
-                <Button
-                  type="button"
-                  onClick={() => setMessage(message + emoji.logo)}
-                >
-                  <span role="img" aria-label="donut">
-                    {emoji.logo}
-                  </span>
-                </Button>
-              ))} */}
+             
               {isLoading ? (
                 ""
               ) : (
                 <Snackbar
                   open={open}
-                  autoHideDuration={10000}
+                  autoHideDuration={20000}
                   anchorOrigin={{ vertical: "top", horizontal: "right" }}
                   onClose={handleClose}
                 >
-                  {/* <Alert
-                  onClose={handleClose}
-                  severity="info"
-                  style={{ width: "330px" }}
-                >
-                  Happy to see you again <strong>{userdata.pseudo}</strong> !{" "}
-                  <span role="img" aria-label="donut">
-                    😀
-                  </span>
-                </Alert> */}
+                
 
                   <Alert
                     onClose={handleClose}
@@ -255,7 +237,7 @@ export default function Posts() {
           <Grid container alignItems="center" justify="center">
             {isLoading ? (
               <>
-                <List style={{ width: "500px" }}>
+                {/* <List style={{ width: "500px" }}>
                   <Slide top cascade>
                     {array.map((el) => (
                       <ListItem alignItems="flex-start">
@@ -269,7 +251,7 @@ export default function Posts() {
                       </ListItem>
                     ))}
                   </Slide>
-                </List>
+                </List> */}
               </>
             ) : (
               <>
@@ -345,6 +327,7 @@ export default function Posts() {
           </Grid>
         </Grid>
       </Grid>
+    
     </>
   );
 }
