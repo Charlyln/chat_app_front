@@ -7,7 +7,7 @@ import Zoom from "react-reveal";
 import { apiUrl } from "../../../apiUrl";
 import IconButton from "@material-ui/core/IconButton";
 import HomeIcon from "@material-ui/icons/Home";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import GroupAddIcon from "@material-ui/icons/GroupAdd";
 import QuestionAnswerIcon from "@material-ui/icons/QuestionAnswer";
 
@@ -25,6 +25,10 @@ export default function MyAppBar() {
   useEffect(() => {
     getUser();
   }, []);
+
+  if (!isLoading && !userdata) {
+    return <Redirect to="/" />;
+  }
 
   const getUser = async () => {
     const id = window.localStorage.getItem("uuid");
@@ -44,7 +48,7 @@ export default function MyAppBar() {
         <Zoom top>
           <Avatar
             alt="Temy Sharp"
-            src={isLoading ? "" : userdata.avatar}
+            src={userdata ? userdata.avatar : ""}
             style={{ width: "50px", height: "50px" }}
           />
         </Zoom>
