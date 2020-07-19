@@ -117,7 +117,7 @@ export default function Users() {
             <Grid container alignItems="center" justify="center">
               {isLoading ? (
                 <>
-                  <List style={{ width: "500px", marginTop:"17px" }}>
+                  <List style={{ width: "500px", marginTop: "17px" }}>
                     <Slide top cascade>
                       {array.map((el) => (
                         <ListItem alignItems="flex-start">
@@ -157,6 +157,7 @@ export default function Users() {
                                 : "followers"
                             }`}
                           />
+                         
 
                           {user.Followers.find(
                             (follower) => follower.followerId === UserId
@@ -207,7 +208,9 @@ export default function Users() {
         onClose={handleClose}
       >
         <Alert onClose={handleClose} severity="info" style={{ width: "330px" }}>
-         Here you can follow people you want and see their posts on the wall ! I suggest you <strong>Dark Vador</strong> and <strong>Homer Simpson</strong>, funny guys{" "}
+          Here you can follow people you want and see their posts on the wall !
+          I suggest you <strong>Dark Vador</strong> and{" "}
+          <strong>Homer Simpson</strong>, funny guys{" "}
           <span role="img" aria-label="donut">
             😀
           </span>
