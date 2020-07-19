@@ -13,6 +13,8 @@ import {
   Icon,
   FormControlLabel,
   Checkbox,
+  IconButton,
+  MuiThemeProvider,
 } from "@material-ui/core";
 import Axios from "axios";
 import Skeleton from "@material-ui/lab/Skeleton";
@@ -23,6 +25,8 @@ import Alert from "@material-ui/lab/Alert";
 import Favorite from "@material-ui/icons/Favorite";
 import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
 import { apiUrl } from "../../apiUrl";
+import HelpIcon from "@material-ui/icons/Help";
+import MyAppBar from "./AppBar/MyAppBar";
 
 export default function Messenger() {
   const [dataMessages, setdataMessages] = useState([]);
@@ -52,13 +56,13 @@ export default function Messenger() {
     setOpen(false);
   };
 
+  const openInfos = () => {
+    setOpen(true);
+  };
+
   useEffect(() => {
     getMessages();
     getUser();
-    const timer = setTimeout(() => {
-      setOpen(true);
-    }, 2000);
-    return () => clearTimeout(timer);
   }, []);
 
   const getMessages = async () => {
@@ -68,7 +72,7 @@ export default function Messenger() {
 
       const timer = setTimeout(() => {
         setIsLoading(false);
-      }, 2000);
+      }, 1000);
       return () => clearTimeout(timer);
     } catch (err) {
       console.log(err);
@@ -126,128 +130,159 @@ export default function Messenger() {
       console.log(err);
     }
   };
+
   if (!window.localStorage.getItem("uuid")) {
     return <Redirect to="/" />;
   }
   return (
     <>
-      {isLoading ? (
-        <>
-          <List style={{ width: "500px" }}>
-            <Slide top cascade>
-              {array.map((el) => (
-                <ListItem alignItems="flex-start">
-                  <Skeleton
-                    variant="rect"
-                    width={300}
-                    height={72}
-                    className="paperOther"
-                    style={{ margin: "8px 16px" }}
-                  ></Skeleton>
-                </ListItem>
-              ))}
-            </Slide>
-          </List>
-        </>
-      ) : (
-        <>
-          <List style={{ width: "500px" }}>
-            {dataMessages
-              .sort(function (a, b) {
-                return new Date(a.createdAt) - new Date(b.createdAt);
-              })
-              .slice(Math.max(dataMessages.length - 5, 0))
-              .map((message) => (
-                <Paper
-                  elevation={4}
-                  style={{ margin: 32, width: "300px" }}
-                  className={
-                    message.UserUuid === UserId ? "paperMe" : "paperOther"
-                  }
-                >
-                  <ListItem
-                    alignItems="flex-start"
-                    className={
-                      message.UserUuid === UserId ? "listMe" : "listOther"
-                    }
-                  >
-                    <ListItemAvatar>
-                      <Avatar alt="Temy Sharp" src={message.User.avatar} />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={message.content || "message"}
-                      secondary={message.User.pseudo}
-                    />
+      <MyAppBar />
 
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          icon={<FavoriteBorder fontSize="small" />}
-                          checkedIcon={<Favorite fontSize="small" />}
-                          id={message.uuid}
-                          name={message.likes}
-                          onChange={putLike}
-                          checked={
-                            message.Likes.find(
-                              (like) => like.UserUuid === UserId
-                            )
-                              ? true
-                              : false
+      <Grid container alignItems="center" style={{ marginTop: "70px" }}>
+        <Grid container>
+          <Grid item xs={12} style={{ textAlign: "end" }}>
+            <IconButton>
+              <HelpIcon onClick={openInfos} />
+            </IconButton>
+          </Grid>
+        </Grid>
+
+        <Grid container alignItems="center">
+          <Grid item xs={8}>
+            <Grid container alignItems="center" justify="center">
+              {isLoading ? (
+                <>
+                  <List style={{ width: "500px", marginTop: "17px" }}>
+                    <Slide top cascade>
+                      {array.map((el) => (
+                        <ListItem alignItems="flex-start">
+                          <Skeleton
+                            variant="rect"
+                            width={300}
+                            height={72}
+                            className="paperOther"
+                            style={{ margin: "8px 16px" }}
+                          ></Skeleton>
+                        </ListItem>
+                      ))}
+                    </Slide>
+                  </List>
+                </>
+              ) : (
+                <>
+                  <List style={{ width: "500px" }}>
+                    {dataMessages
+                      .sort(function (a, b) {
+                        return new Date(a.createdAt) - new Date(b.createdAt);
+                      })
+                      .slice(Math.max(dataMessages.length - 5, 0))
+                      .map((message) => (
+                        <Paper
+                          elevation={4}
+                          style={{ margin: 32, width: "300px" }}
+                          className={
+                            message.UserUuid === UserId
+                              ? "paperMe"
+                              : "paperOther"
                           }
-                        />
-                      }
-                      label={
-                        message.Likes.length > 0 ? message.Likes.length : ""
-                      }
-                    />
-                  </ListItem>
-                </Paper>
-              ))}
-          </List>
-        </>
-      )}
-      <form autoComplete="off" onSubmit={postMessage}>
-        <TextField
-          style={{ margin: "20px" }}
-          id="message"
-          label="message"
-          variant="outlined"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          autoFocus="autofocus"
-        />
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          disabled={!message}
-          style={{ margin: "27px 0px" }}
-          endIcon={<Icon>send</Icon>}
-        >
-          Send
-        </Button>
+                        >
+                          <ListItem
+                            alignItems="flex-start"
+                            className={
+                              message.UserUuid === UserId
+                                ? "listMe"
+                                : "listOther"
+                            }
+                          >
+                            <ListItemAvatar>
+                              <Avatar
+                                alt="Temy Sharp"
+                                src={message.User.avatar}
+                              />
+                            </ListItemAvatar>
+                            <ListItemText
+                              primary={message.content || "message"}
+                              secondary={message.User.pseudo}
+                            />
 
-        <Grid container alignItems="center" justify="center">
-          {emojis.map((emoji) => (
-            <Button
-              type="button"
-              onClick={() => setMessage(message + emoji.logo)}
-            >
-              <span role="img" aria-label="donut">
-                {emoji.logo}
-              </span>
-            </Button>
-          ))}
-          {isLoading ? (
-            ""
-          ) : (
-            <Snackbar
-              open={open}
-              autoHideDuration={5000}
-              anchorOrigin={{ vertical: "top", horizontal: "right" }}
-              onClose={handleClose}
-            >
-              {/* <Alert
+                            <FormControlLabel
+                              control={
+                                <Checkbox
+                                  icon={<FavoriteBorder fontSize="small" />}
+                                  checkedIcon={<Favorite fontSize="small" />}
+                                  id={message.uuid}
+                                  name={message.likes}
+                                  onChange={putLike}
+                                  checked={
+                                    message.Likes.find(
+                                      (like) => like.UserUuid === UserId
+                                    )
+                                      ? true
+                                      : false
+                                  }
+                                />
+                              }
+                              label={
+                                message.Likes.length > 0
+                                  ? message.Likes.length
+                                  : ""
+                              }
+                            />
+                          </ListItem>
+                        </Paper>
+                      ))}
+                  </List>
+                </>
+              )}
+            </Grid>
+          </Grid>
+          <Grid item xs={4}>
+            <Grid container>
+              <form autoComplete="off" onSubmit={postMessage}>
+                <TextField
+                  style={{ margin: "20px" }}
+                  id="message"
+                  label="message"
+                  variant="outlined"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  autoFocus="autofocus"
+                />
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  disabled={!message}
+                  style={{ margin: "27px 0px" }}
+                  endIcon={<Icon>send</Icon>}
+                >
+                  Send
+                </Button>
+
+                <Grid container alignItems="center" justify="center">
+                  {emojis.map((emoji) => (
+                    <Button
+                      type="button"
+                      onClick={() => setMessage(message + emoji.logo)}
+                    >
+                      <span role="img" aria-label="donut">
+                        {emoji.logo}
+                      </span>
+                    </Button>
+                  ))}
+                  {isLoading ? (
+                    ""
+                  ) : (
+                    <Snackbar
+                      open={open}
+                      autoHideDuration={10000}
+                      anchorOrigin={{
+                        vertical: "top",
+                        horizontal: "right",
+                      }}
+                      onClose={handleClose}
+                    >
+                      {/* <Alert
                   onClose={handleClose}
                   severity="info"
                   style={{ width: "330px" }}
@@ -258,21 +293,25 @@ export default function Messenger() {
                   </span>
                 </Alert> */}
 
-              <Alert
-                onClose={handleClose}
-                severity="info"
-                style={{ width: "330px" }}
-              >
-                Welcome to the chat app <strong>{userdata.pseudo}</strong> ! You
-                can send messages and receive messages from your friends. Enjoy{" "}
-                <span role="img" aria-label="donut">
-                  😀
-                </span>
-              </Alert>
-            </Snackbar>
-          )}{" "}
+                      <Alert
+                        onClose={handleClose}
+                        severity="info"
+                        style={{ width: "330px" }}
+                      >
+                        Here you can send messages and receive messages from
+                        other people. You can only see the last five{" "}
+                        <span role="img" aria-label="donut">
+                          😀
+                        </span>
+                      </Alert>
+                    </Snackbar>
+                  )}{" "}
+                </Grid>
+              </form>
+            </Grid>
+          </Grid>
         </Grid>
-      </form>
+      </Grid>
     </>
   );
 }
