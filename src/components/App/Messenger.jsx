@@ -26,6 +26,7 @@ import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
 import { apiUrl } from "../../apiUrl";
 import HelpIcon from "@material-ui/icons/Help";
 import MyAppBar from "./AppBar/MyAppBar";
+import SendIcon from "@material-ui/icons/Send";
 
 export default function Messenger() {
   const [dataMessages, setdataMessages] = useState([]);
@@ -157,10 +158,9 @@ export default function Messenger() {
                         <ListItem alignItems="flex-start">
                           <Skeleton
                             variant="rect"
-                            
                             height={72}
                             className="paperOther skeleton"
-                            style={{ margin: "8px 16px"}}
+                            style={{ margin: "8px 16px" }}
                           ></Skeleton>
                         </ListItem>
                       ))}
@@ -254,7 +254,7 @@ export default function Messenger() {
                   color="primary"
                   disabled={!message}
                   style={{ margin: "27px 0px" }}
-                  endIcon={<Icon>send</Icon>}
+                  endIcon={<SendIcon />}
                 >
                   Send
                 </Button>
