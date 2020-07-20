@@ -10,7 +10,6 @@ import {
   Avatar,
   Grid,
   Snackbar,
-  Icon,
   FormControlLabel,
   Checkbox,
   IconButton,

@@ -20,7 +20,6 @@ import {
   ListItem,
   ListItemText,
   ListItemAvatar,
-  CircularProgress,
   Paper,
   ListItemSecondaryAction,
 } from "@material-ui/core";
@@ -50,13 +49,12 @@ export default function Posts() {
   const [userdata, setuserdata] = useState([]);
   const [open, setOpen] = useState(false);
   const [logo, setLogo] = useState("");
-  const [expanded, setExpanded] = useState(false);
   const [postId, setPostId] = useState("");
   const [comment, setComment] = useState("");
-  const [arrayPostId, SetArrayPostId] = useState([]);
+  const [arrayPostId] = useState([]);
 
   const handleLogo = (e) => {
-    setLogo(URL.createObjectURL(e.target.files[0]));
+    setLogo(e.target.files[0]);
   };
 
   const handleClose = (event, reason) => {
@@ -202,6 +200,7 @@ export default function Posts() {
                   disabled={!message}
                   endIcon={<SendIcon />}
                   className="buttonSend"
+                  onClick={sendPost}
                 >
                   Send
                 </Button>
@@ -236,7 +235,10 @@ export default function Posts() {
                   </label>
                   <ListItemAvatar>
                     {logo ? (
-                      <Avatar variant="square" src={logo} />
+                      <Avatar
+                        variant="square"
+                        src={URL.createObjectURL(logo)}
+                      />
                     ) : (
                       <Avatar variant="square">
                         <PhotoIcon />
@@ -431,13 +433,12 @@ export default function Posts() {
                                                 secondary={comment.content}
                                               />
                                               <ListItemSecondaryAction>
-                                               
-                                                  <ListItemText
-                                                    secondary={
-                                                      comment.createdAt.slice(0, 10)
-                                                    }
-                                                  />
-                                                
+                                                <ListItemText
+                                                  secondary={comment.createdAt.slice(
+                                                    0,
+                                                    10
+                                                  )}
+                                                />
                                               </ListItemSecondaryAction>
                                             </ListItem>
                                           ))}
