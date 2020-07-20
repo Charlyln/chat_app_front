@@ -16,6 +16,7 @@ import {
   IconButton,
   FormControlLabel,
   Checkbox,
+  Fade,
 } from "@material-ui/core";
 import Axios from "axios";
 import "./messenger.css";
@@ -155,7 +156,6 @@ export default function Posts() {
                 variant="outlined"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                
               />
               <input
                 accept="image/*"
@@ -190,7 +190,6 @@ export default function Posts() {
                 Send
               </Button>
 
-             
               {isLoading ? (
                 ""
               ) : (
@@ -200,8 +199,6 @@ export default function Posts() {
                   anchorOrigin={{ vertical: "top", horizontal: "right" }}
                   onClose={handleClose}
                 >
-                
-
                   <Alert
                     onClose={handleClose}
                     severity="info"
@@ -231,7 +228,7 @@ export default function Posts() {
             {isLoading ? (
               <>
                 {/* <List style={{ width: "500px" }}>
-                  <Slide top cascade>
+                  <Fade top cascade>
                     {array.map((el) => (
                       <ListItem alignItems="flex-start">
                         <Skeleton
@@ -243,84 +240,88 @@ export default function Posts() {
                         ></Skeleton>
                       </ListItem>
                     ))}
-                  </Slide>
+                  </Fade>
                 </List> */}
               </>
             ) : (
               <>
-                <List style={{ width: "500px" }}>
-                  {dataMessages
-                    .filter((message) =>
-                      message.User.Followers.find(
-                        (element) => element.followerId === UserId
+                <Fade in={true}>
+                  <List style={{ width: "500px" }}>
+                    {dataMessages
+                      .filter((message) =>
+                        message.User.Followers.find(
+                          (element) => element.followerId === UserId
+                        )
                       )
-                    )
-                    .sort(function (a, b) {
-                      return new Date(b.createdAt) - new Date(a.createdAt);
-                    })
-                    .map((message) => {
-                      return (
-                        <Card style={{ maxWidth: "500px", margin: "10px 0px" }}>
-                          <CardHeader
-                            avatar={
-                              <Avatar
-                                aria-label="recipe"
-                                src={message.User.avatar}
-                              >
-                                R
-                              </Avatar>
-                            }
-                            title={message.User.pseudo}
-                            subheader={message.createdAt.slice(0, 10)}
-                          />
-                          {message.imageUrl ? (
-                            <CardMedia
-                              style={{ height: 0, paddingTop: "56.25%" }}
-                              image={message.imageUrl}
-                              title="Paella dish"
+                      .sort(function (a, b) {
+                        return new Date(b.createdAt) - new Date(a.createdAt);
+                      })
+                      .map((message) => {
+                        return (
+                          <Card
+                            style={{ maxWidth: "500px", margin: "10px 0px" }}
+                          >
+                            <CardHeader
+                              avatar={
+                                <Avatar
+                                  aria-label="recipe"
+                                  src={message.User.avatar}
+                                >
+                                  R
+                                </Avatar>
+                              }
+                              title={message.User.pseudo}
+                              subheader={message.createdAt.slice(0, 10)}
                             />
-                          ) : (
-                            ""
-                          )}
-                          <CardContent>
-                            <Typography>{message.content}</Typography>
-                          </CardContent>
+                            {message.imageUrl ? (
+                              <CardMedia
+                                style={{ height: 0, paddingTop: "56.25%" }}
+                                image={message.imageUrl}
+                                title="Paella dish"
+                              />
+                            ) : (
+                              ""
+                            )}
+                            <CardContent>
+                              <Typography>{message.content}</Typography>
+                            </CardContent>
 
-                          <CardActions disableSpacing>
-                            <FormControlLabel
-                              control={
-                                <Checkbox
-                                  icon={<FavoriteBorder fontSize="small" />}
-                                  checkedIcon={<Favorite fontSize="small" />}
-                                  id={message.uuid}
-                                  name={message.likes}
-                                  onChange={putLike}
-                                  checked={
-                                    message.Likes.find(
-                                      (like) => like.UserUuid === UserId
-                                    )
-                                      ? true
-                                      : false
-                                  }
-                                />
-                              }
-                              label={
-                                message.Likes.length > 0
-                                  ? message.Likes.length
-                                  : ""
-                              }
-                            />
-                          </CardActions>
-                        </Card>
-                      );
-                    })}
-                </List>
+                            <CardActions disableSpacing>
+                              <FormControlLabel
+                                className="like"
+                                control={
+                                  <Checkbox
+                                    icon={<FavoriteBorder fontSize="small" />}
+                                    checkedIcon={<Favorite fontSize="small" />}
+                                    id={message.uuid}
+                                    name={message.likes}
+                                    onChange={putLike}
+                                    checked={
+                                      message.Likes.find(
+                                        (like) => like.UserUuid === UserId
+                                      )
+                                        ? true
+                                        : false
+                                    }
+                                  />
+                                }
+                                label={
+                                  message.Likes.length > 0
+                                    ? message.Likes.length
+                                    : ""
+                                }
+                              />
+                            </CardActions>
+                          </Card>
+                        );
+                      })}
+                  </List>
+                </Fade>
               </>
             )}
           </Grid>
         </Grid>
       </Grid>
-    
     </>
   );
 }
