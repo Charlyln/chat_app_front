@@ -44,3 +44,16 @@
     width: 270px;
   }
 }
+.buttonSend {
+  margin: 27px 0px !important;
+}
+
+@media screen and (max-width: 435px) {
+  .textField {
+    margin: 0 !important;
+    margin-left: 10px !important;
+  }
+  .buttonSend {
+    margin: 10px 0px 0px 10px !important;
+  }
+}
