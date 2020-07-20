@@ -147,7 +147,7 @@ export default function Messenger() {
         </Grid>
 
         <Grid container alignItems="center">
-          <Grid item xs={8}>
+          <Grid item xs={12} sm={12} md={8} lg={8}>
             <Grid container alignItems="center" justify="center">
               {isLoading ? (
                 <>
@@ -157,10 +157,10 @@ export default function Messenger() {
                         <ListItem alignItems="flex-start">
                           <Skeleton
                             variant="rect"
-                            width={300}
+                            
                             height={72}
-                            className="paperOther"
-                            style={{ margin: "8px 16px" }}
+                            className="paperOther skeleton"
+                            style={{ margin: "8px 16px"}}
                           ></Skeleton>
                         </ListItem>
                       ))}
@@ -178,7 +178,7 @@ export default function Messenger() {
                       .map((message) => (
                         <Paper
                           elevation={4}
-                          style={{ margin: 32, width: "300px" }}
+                          style={{ margin: 32 }}
                           className={
                             message.UserUuid === UserId
                               ? "paperMe"
@@ -205,6 +205,7 @@ export default function Messenger() {
                             />
 
                             <FormControlLabel
+                              className="like"
                               control={
                                 <Checkbox
                                   icon={<FavoriteBorder fontSize="small" />}
@@ -235,7 +236,7 @@ export default function Messenger() {
               )}
             </Grid>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={12} md={4} lg={4}>
             <Grid container>
               <form autoComplete="off" onSubmit={postMessage}>
                 <TextField
