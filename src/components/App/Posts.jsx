@@ -6,7 +6,6 @@ import {
   Avatar,
   Grid,
   Snackbar,
-  Icon,
   CardHeader,
   Card,
   CardMedia,
@@ -17,6 +16,13 @@ import {
   FormControlLabel,
   Checkbox,
   Fade,
+  Collapse,
+  ListItem,
+  ListItemText,
+  ListItemAvatar,
+  CircularProgress,
+  Paper,
+  ListItemSecondaryAction,
 } from "@material-ui/core";
 import Axios from "axios";
 import "./messenger.css";
@@ -30,6 +36,10 @@ import MyAppBar from "./AppBar/MyAppBar";
 import HelpIcon from "@material-ui/icons/Help";
 import ClearIcon from "@material-ui/icons/Clear";
 import CheckIcon from "@material-ui/icons/Check";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import ExpandLessIcon from "@material-ui/icons/ExpandLess";
+import SendIcon from "@material-ui/icons/Send";
+import PhotoIcon from "@material-ui/icons/Photo";
 
 export default function Posts() {
   const [dataMessages, setdataPosts] = useState([]);
@@ -40,9 +50,13 @@ export default function Posts() {
   const [userdata, setuserdata] = useState([]);
   const [open, setOpen] = useState(false);
   const [logo, setLogo] = useState("");
+  const [expanded, setExpanded] = useState(false);
+  const [postId, setPostId] = useState("");
+  const [comment, setComment] = useState("");
+  const [arrayPostId, SetArrayPostId] = useState([]);
 
   const handleLogo = (e) => {
-    setLogo(e.target.files[0]);
+    setLogo(URL.createObjectURL(e.target.files[0]));
   };
 
   const handleClose = (event, reason) => {
@@ -85,6 +99,22 @@ export default function Posts() {
 
     getPosts();
     getUser();
+  };
+
+  const postComment = async (e) => {
+    e.preventDefault();
+    try {
+      const UserId = window.localStorage.getItem("uuid");
+      await Axios.post(`${apiUrl}/comments`, {
+        content: comment,
+        UserUuid: UserId,
+        PostUuid: postId,
+      });
+
+      setComment("");
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const getUser = async () => {
@@ -145,89 +175,109 @@ export default function Posts() {
     <>
       <MyAppBar />
 
-      <Grid container alignItems="center" style={{ marginTop: "70px" }}>
+      <Grid
+        container
+        alignItems="center"
+        style={{ marginTop: "70px" }}
+        direction="column"
+      >
         <Grid container>
-          <Grid item xs={10}>
-            <form autoComplete="off" onSubmit={sendPost}>
-              <TextField
-                style={{ margin: "20px" }}
-                id="post"
-                label="post"
-                variant="outlined"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-              />
-              <input
-                accept="image/*"
-                id="icon-button-file"
-                type="file"
-                style={{ display: "none" }}
-                files={logo}
-                onChange={handleLogo}
-                disabled={!message}
-              />
-              <label htmlFor="icon-button-file">
-                <IconButton
-                  style={{
-                    color: !message ? "grey" : logo ? "green" : "red",
-                  }}
-                  aria-label="upload picture"
-                  component="span"
+          <Grid item xs={12} sm={12} md={4} lg={4}>
+            <Grid container>
+              <Grid item xs={12}>
+                <TextField
+                  style={{ margin: "20px" }}
+                  id="post"
+                  label="Post"
+                  variant="outlined"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  className="textField"
+                />
+
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
                   disabled={!message}
+                  endIcon={<SendIcon />}
+                  className="buttonSend"
                 >
-                  <PhotoCamera />
-                  {logo ? <CheckIcon /> : <ClearIcon />}
-                </IconButton>
-              </label>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                disabled={!message}
-                style={{ margin: "27px 0px" }}
-                endIcon={<Icon>send</Icon>}
-              >
-                Send
-              </Button>
+                  Send
+                </Button>
+              </Grid>
+            </Grid>
 
-              {isLoading ? (
-                ""
-              ) : (
-                <Snackbar
-                  open={open}
-                  autoHideDuration={20000}
-                  anchorOrigin={{ vertical: "top", horizontal: "right" }}
-                  onClose={handleClose}
-                >
-                  <Alert
-                    onClose={handleClose}
-                    severity="info"
-                    style={{ width: "330px" }}
-                  >
-                    Welcome to the wall <strong>{userdata.pseudo}</strong> ! You
-                    can send posts with or without image and see posts from
-                    users you follow ! If you don't have any yet, go to the next
-                    page to add some{" "}
-                    <span role="img" aria-label="donut">
-                      😀
-                    </span>
-                  </Alert>
-                </Snackbar>
-              )}
-            </form>
-          </Grid>
-          <Grid item xs={2} style={{ textAlign: "end" }}>
-            <IconButton onClick={openInfos}>
-              <HelpIcon />
-            </IconButton>
-          </Grid>
-        </Grid>
+            <Grid item xs={12}>
+              <List>
+                <ListItem>
+                  <input
+                    accept="image/*"
+                    id="icon-button-file"
+                    type="file"
+                    style={{ display: "none" }}
+                    files={logo}
+                    onChange={handleLogo}
+                    disabled={logo}
+                  />
 
-        <Grid item xs={12}>
-          <Grid container alignItems="center" justify="center">
+                  <label htmlFor="icon-button-file">
+                    <IconButton
+                      style={{
+                        color: !message ? "grey" : logo ? "green" : "red",
+                      }}
+                      aria-label="upload picture"
+                      component="span"
+                      disabled={logo}
+                    >
+                      <PhotoCamera />
+                      {logo ? <CheckIcon /> : <ClearIcon />}
+                    </IconButton>
+                  </label>
+                  <ListItemAvatar>
+                    {logo ? (
+                      <Avatar variant="square" src={logo} />
+                    ) : (
+                      <Avatar variant="square">
+                        <PhotoIcon />
+                      </Avatar>
+                    )}
+                  </ListItemAvatar>
+                </ListItem>
+              </List>
+            </Grid>
+
             {isLoading ? (
-              <>
-                {/* <List style={{ width: "500px" }}>
+              ""
+            ) : (
+              <Snackbar
+                open={open}
+                autoHideDuration={20000}
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                onClose={handleClose}
+              >
+                <Alert
+                  onClose={handleClose}
+                  severity="info"
+                  style={{ width: "330px" }}
+                >
+                  Welcome to the wall <strong>{userdata.pseudo}</strong> ! You
+                  can send posts with or without image and see posts from users
+                  you follow ! If you don't have any yet, go to the next page to
+                  add some{" "}
+                  <span role="img" aria-label="donut">
+                    😀
+                  </span>
+                </Alert>
+              </Snackbar>
+            )}
+          </Grid>
+
+          <Grid item xs={12} sm={12} md={6} lg={6}>
+            <Grid container alignItems="center" justify="center">
+              {isLoading ? (
+                <>
+                  {/* <List style={{ width: "500px" }}>
                   <Fade top cascade>
                     {array.map((el) => (
                       <ListItem alignItems="flex-start">
@@ -242,83 +292,212 @@ export default function Posts() {
                     ))}
                   </Fade>
                 </List> */}
-              </>
-            ) : (
-              <>
-                <Fade in={true}>
-                  <List style={{ width: "500px" }}>
-                    {dataMessages
-                      .filter((message) =>
-                        message.User.Followers.find(
-                          (element) => element.followerId === UserId
+                </>
+              ) : (
+                <>
+                  <Fade in={true}>
+                    <List style={{ width: "500px" }}>
+                      {dataMessages
+                        .filter((message) =>
+                          message.User.Followers.find(
+                            (element) => element.followerId === UserId
+                          )
                         )
-                      )
-                      .sort(function (a, b) {
-                        return new Date(b.createdAt) - new Date(a.createdAt);
-                      })
-                      .map((message) => {
-                        return (
-                          <Card
-                            style={{ maxWidth: "500px", margin: "10px 0px" }}
-                          >
-                            <CardHeader
-                              avatar={
-                                <Avatar
-                                  aria-label="recipe"
-                                  src={message.User.avatar}
-                                >
-                                  R
-                                </Avatar>
-                              }
-                              title={message.User.pseudo}
-                              subheader={message.createdAt.slice(0, 10)}
-                            />
-                            {message.imageUrl ? (
-                              <CardMedia
-                                style={{ height: 0, paddingTop: "56.25%" }}
-                                image={message.imageUrl}
-                                title="Paella dish"
-                              />
-                            ) : (
-                              ""
-                            )}
-                            <CardContent>
-                              <Typography>{message.content}</Typography>
-                            </CardContent>
+                        .sort(function (a, b) {
+                          return new Date(b.createdAt) - new Date(a.createdAt);
+                        })
+                        .map((message, i) => {
+                          return (
+                            <Paper elevation={5}>
+                              <Card
+                                style={{
+                                  maxWidth: "500px",
+                                  margin: "20px 0px",
+                                }}
+                              >
+                                <CardHeader
+                                  avatar={
+                                    <Avatar
+                                      aria-label="recipe"
+                                      src={message.User.avatar}
+                                    >
+                                      R
+                                    </Avatar>
+                                  }
+                                  title={message.User.pseudo}
+                                  subheader={message.createdAt.slice(0, 10)}
+                                />
+                                {message.imageUrl ? (
+                                  <CardMedia
+                                    style={{ height: 0, paddingTop: "56.25%" }}
+                                    image={message.imageUrl}
+                                    title="Paella dish"
+                                  />
+                                ) : (
+                                  ""
+                                )}
+                                <CardContent>
+                                  <Typography>{message.content}</Typography>
+                                </CardContent>
 
-                            <CardActions disableSpacing>
-                              <FormControlLabel
-                                className="like"
-                                control={
-                                  <Checkbox
-                                    icon={<FavoriteBorder fontSize="small" />}
-                                    checkedIcon={<Favorite fontSize="small" />}
-                                    id={message.uuid}
-                                    name={message.likes}
-                                    onChange={putLike}
-                                    checked={
-                                      message.Likes.find(
-                                        (like) => like.UserUuid === UserId
-                                      )
-                                        ? true
-                                        : false
+                                <CardActions disableSpacing>
+                                  <FormControlLabel
+                                    className="like"
+                                    control={
+                                      <Checkbox
+                                        icon={
+                                          <FavoriteBorder fontSize="small" />
+                                        }
+                                        checkedIcon={
+                                          <Favorite fontSize="small" />
+                                        }
+                                        id={message.uuid}
+                                        name={message.likes}
+                                        onChange={putLike}
+                                        checked={
+                                          message.Likes.find(
+                                            (like) => like.UserUuid === UserId
+                                          )
+                                            ? true
+                                            : false
+                                        }
+                                      />
+                                    }
+                                    label={
+                                      message.Likes.length > 0
+                                        ? message.Likes.length
+                                        : ""
                                     }
                                   />
-                                }
-                                label={
-                                  message.Likes.length > 0
-                                    ? message.Likes.length
-                                    : ""
-                                }
-                              />
-                            </CardActions>
-                          </Card>
-                        );
-                      })}
-                  </List>
-                </Fade>
-              </>
-            )}
+                                  <Button
+                                    style={{ marginLeft: "auto" }}
+                                    onClick={() => {
+                                      if (
+                                        arrayPostId.find(
+                                          (postId) => postId === message.uuid
+                                        )
+                                      ) {
+                                        const index = arrayPostId.indexOf(
+                                          message.uuid
+                                        );
+                                        if (index > -1) {
+                                          arrayPostId.splice(index, 1);
+                                        }
+                                      } else {
+                                        arrayPostId.push(message.uuid);
+                                      }
+                                    }}
+                                    size="small"
+                                    endIcon={
+                                      arrayPostId.find(
+                                        (postId) => postId === message.uuid
+                                      ) ? (
+                                        <ExpandLessIcon />
+                                      ) : (
+                                        <ExpandMoreIcon />
+                                      )
+                                    }
+                                  >{`${message.Comments.length} comments`}</Button>
+                                </CardActions>
+                                <Collapse
+                                  in={arrayPostId.find(
+                                    (postId) => postId === message.uuid
+                                  )}
+                                  timeout="auto"
+                                  unmountOnExit
+                                >
+                                  <CardContent>
+                                    <List>
+                                      {message.Comments.length > 0 ? (
+                                        <>
+                                          {message.Comments.sort(function (
+                                            a,
+                                            b
+                                          ) {
+                                            return (
+                                              new Date(a.createdAt) -
+                                              new Date(b.createdAt)
+                                            );
+                                          }).map((comment) => (
+                                            <ListItem>
+                                              <ListItemAvatar>
+                                                <Avatar
+                                                  alt={comment.User.pseudo}
+                                                  src={comment.User.avatar}
+                                                />
+                                              </ListItemAvatar>
+                                              <ListItemText
+                                                primary={comment.User.pseudo}
+                                                secondary={comment.content}
+                                              />
+                                              <ListItemSecondaryAction>
+                                               
+                                                  <ListItemText
+                                                    secondary={
+                                                      comment.createdAt.slice(0, 10)
+                                                    }
+                                                  />
+                                                
+                                              </ListItemSecondaryAction>
+                                            </ListItem>
+                                          ))}
+                                        </>
+                                      ) : (
+                                        ""
+                                      )}
+                                      <ListItem alignItems="flex-end">
+                                        <ListItemAvatar>
+                                          <Avatar
+                                            alt={userdata.pseudo}
+                                            src={userdata.avatar}
+                                          />
+                                        </ListItemAvatar>
+                                        <form onSubmit={postComment}>
+                                          <TextField
+                                            id="outlined-basic"
+                                            label="Comment"
+                                            variant="outlined"
+                                            value={comment}
+                                            size="small"
+                                            onChange={(e) =>
+                                              setComment(e.target.value)
+                                            }
+                                          />
+                                          <Button
+                                            type="submit"
+                                            variant="contained"
+                                            color="primary"
+                                            disabled={!comment}
+                                            endIcon={<SendIcon />}
+                                            size="small"
+                                            onClick={() =>
+                                              setPostId(message.uuid)
+                                            }
+                                            style={{
+                                              margin: "5px 0px 0px 10px",
+                                            }}
+                                          >
+                                            Send
+                                          </Button>
+                                        </form>
+                                      </ListItem>
+                                    </List>
+                                  </CardContent>
+                                </Collapse>
+                              </Card>
+                            </Paper>
+                          );
+                        })}
+                    </List>
+                  </Fade>
+                </>
+              )}
+            </Grid>
+          </Grid>
+          <Grid item xs={2} sm={2} md={2} lg={2} style={{ textAlign: "end" }}>
+            <IconButton onClick={openInfos}>
+              <HelpIcon />
+            </IconButton>
           </Grid>
         </Grid>
       </Grid>
