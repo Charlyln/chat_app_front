@@ -47,7 +47,15 @@
 .buttonSend {
   margin: 27px 0px !important;
 }
-
+.textField {
+  width: 300px;
+  height: 56px;
+  color: grey !important;
+  justify-content: left !important;
+}
+.textFieldRead {
+  color: dimgray !important;
+}
 @media screen and (max-width: 435px) {
   .textField {
     margin: 0 !important;
@@ -55,5 +63,11 @@
   }
   .buttonSend {
     margin: 10px 0px 0px 10px !important;
+  }
+}
+
+@media screen and (min-width: 950px) {
+  .containerFixed {
+    position: fixed;
   }
 }
