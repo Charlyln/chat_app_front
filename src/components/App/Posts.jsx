@@ -28,13 +28,10 @@ import "./messenger.css";
 import { Redirect } from "react-router-dom";
 import Alert from "@material-ui/lab/Alert";
 import Favorite from "@material-ui/icons/Favorite";
-import PhotoCamera from "@material-ui/icons/PhotoCamera";
 import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
 import { apiUrl } from "../../apiUrl";
 import MyAppBar from "./AppBar/MyAppBar";
 import HelpIcon from "@material-ui/icons/Help";
-import ClearIcon from "@material-ui/icons/Clear";
-import CheckIcon from "@material-ui/icons/Check";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import SendIcon from "@material-ui/icons/Send";
@@ -42,9 +39,7 @@ import PhotoIcon from "@material-ui/icons/Photo";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import Slide from "@material-ui/core/Slide";
 import OndemandVideoIcon from "@material-ui/icons/OndemandVideo";
 import InsertEmoticonIcon from "@material-ui/icons/InsertEmoticon";
 
@@ -340,6 +335,7 @@ export default function Posts() {
                       <Paper elevation={5}>
                         <CardMedia title="video">
                           <iframe
+                            title="oneVideo"
                             width="100%"
                             height="220"
                             src={youtubeUrl.replace("watch?v=", "embed/")}
@@ -547,6 +543,7 @@ export default function Posts() {
                                 ) ? (
                                   <CardMedia title="video">
                                     <iframe
+                                      title="otherVideo"
                                       width="100%"
                                       height="300"
                                       src={message.imageUrl.replace(
