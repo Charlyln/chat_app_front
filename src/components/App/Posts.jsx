@@ -39,6 +39,14 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import SendIcon from "@material-ui/icons/Send";
 import PhotoIcon from "@material-ui/icons/Photo";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Slide from "@material-ui/core/Slide";
+import OndemandVideoIcon from "@material-ui/icons/OndemandVideo";
+import InsertEmoticonIcon from "@material-ui/icons/InsertEmoticon";
 
 export default function Posts() {
   const [dataMessages, setdataPosts] = useState([]);
@@ -52,9 +60,42 @@ export default function Posts() {
   const [postId, setPostId] = useState("");
   const [comment, setComment] = useState("");
   const [arrayPostId] = useState([]);
+  const [open2, setOpen2] = useState(false);
+  const [photo, setPhoto] = useState(false);
+  const [video, setVideo] = useState(false);
+  const [imageDialog, setImageDialog] = useState("");
+  const [youtubeUrl, setYoutubeUrl] = useState("");
+
+  const handlePhotoOpen = () => {
+    setOpen2(true);
+    setPhoto(true);
+    setVideo(false);
+    setImageDialog("");
+    setYoutubeUrl("");
+  };
+
+  const handlePostOpen = () => {
+    setOpen2(true);
+    setVideo(false);
+    setPhoto(false);
+    setYoutubeUrl("");
+  };
+  const handleVideoOpen = () => {
+    setOpen2(true);
+    setVideo(true);
+    setPhoto(false);
+    setImageDialog("");
+  };
+
+  const handleClose3 = () => {
+    setOpen2(false);
+  };
 
   const handleLogo = (e) => {
-    setLogo(e.target.files[0]);
+    if (e.target.files[0]) {
+      setLogo(e.target.files[0]);
+      setImageDialog(URL.createObjectURL(e.target.files[0]));
+    }
   };
 
   const handleClose = (event, reason) => {
@@ -141,7 +182,7 @@ export default function Posts() {
     const imgurToken = "44670bbff769f1a";
 
     try {
-      if (logo) {
+      if (logo && !youtubeUrl) {
         const res = await Axios.post("https://api.imgur.com/3/image", logo, {
           headers: {
             Authorization: `Client-ID ${imgurToken}`,
@@ -152,6 +193,12 @@ export default function Posts() {
           UserUuid: UserId,
           imageUrl: res.data.data.link,
         });
+      } else if (youtubeUrl) {
+        await Axios.post(`${apiUrl}/posts`, {
+          content: message,
+          UserUuid: UserId,
+          imageUrl: youtubeUrl,
+        });
       } else {
         await Axios.post(`${apiUrl}/posts`, {
           content: message,
@@ -161,6 +208,7 @@ export default function Posts() {
 
       setMessage("");
       setLogo("");
+      setOpen2(false);
     } catch (err) {
       console.log(err);
     }
@@ -177,38 +225,202 @@ export default function Posts() {
         container
         alignItems="center"
         style={{ marginTop: "70px" }}
+        className={open2 ? "marginDialog" : ""}
         direction="column"
       >
         <Grid container>
           <Grid item xs={12} sm={12} md={4} lg={4}>
-            <Grid container>
+            <Grid container className="containerFixed">
               <Grid item xs={12}>
-                <TextField
-                  style={{ margin: "20px" }}
-                  id="post"
-                  label="Post"
-                  variant="outlined"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  className="textField"
-                />
-
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  disabled={!message}
-                  endIcon={<SendIcon />}
-                  className="buttonSend"
-                  onClick={sendPost}
+                <List>
+                  <ListItem>
+                    <Button
+                      className="textField"
+                      variant="outlined"
+                      onClick={handlePostOpen}
+                    >
+                      Post
+                    </Button>
+                  </ListItem>
+                  {/* <ListItem>
+                    <TextField
+                      className="textField"
+                      variant="outlined"
+                      onClick={handleClickOpen}
+                      id="standard-read-only-input"
+                      defaultValue="Post"
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <TextField
+                      id="post"
+                      label="Post"
+                      variant="outlined"
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      className="textField"
+                    />
+                  </ListItem> */}
+                  <ListItem>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      onClick={handlePhotoOpen}
+                      startIcon={<PhotoIcon />}
+                    >
+                      Photo
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      startIcon={<OndemandVideoIcon />}
+                      style={{ marginLeft: "10px" }}
+                      onClick={handleVideoOpen}
+                    >
+                      Video
+                    </Button>
+                  </ListItem>
+                </List>
+                <Dialog
+                  open={open2}
+                  keepMounted
+                  onClose={handleClose3}
+                  aria-labelledby="alert-dialog-slide-title"
+                  aria-describedby="alert-dialog-slide-description"
+                  maxWidth="xs"
+                  fullWidth
                 >
-                  Send
-                </Button>
+                  <DialogTitle
+                    id="alert-dialog-slide-title"
+                    style={{ alignSelf: "center" }}
+                  >
+                    {"Create Post"}
+                  </DialogTitle>
+
+                  <DialogContent>
+                    <TextField
+                      fullWidth
+                      autoFocus
+                      id="postMessage"
+                      label="Post"
+                      variant="outlined"
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                    />
+                  </DialogContent>
+                  {video ? (
+                    <DialogContent>
+                      <TextField
+                        fullWidth
+                        id="youtubeUrl"
+                        value={youtubeUrl}
+                        label="Youtube url"
+                        variant="outlined"
+                        onChange={(e) => setYoutubeUrl(e.target.value)}
+                      />
+                    </DialogContent>
+                  ) : (
+                    ""
+                  )}
+                  {photo ? (
+                    <DialogContent>
+                      <Card>
+                        <CardMedia
+                          style={{ height: 0, paddingTop: "56.25%" }}
+                          image={imageDialog}
+                          title="Photo"
+                        />
+                      </Card>
+                    </DialogContent>
+                  ) : video ? (
+                    <DialogContent>
+                      <Paper elevation={5}>
+                        <CardMedia title="video">
+                          <iframe
+                            width="100%"
+                            height="220"
+                            src={youtubeUrl.replace("watch?v=", "embed/")}
+                          ></iframe>
+                        </CardMedia>
+                      </Paper>
+                    </DialogContent>
+                  ) : (
+                    ""
+                  )}
+
+                  <DialogContent>
+                    <input
+                      accept="image/*"
+                      id="icon-button-file"
+                      type="file"
+                      style={{ display: "none" }}
+                      files={logo}
+                      onChange={handleLogo}
+                    />
+
+                    <label htmlFor="icon-button-file">
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={handlePhotoOpen}
+                        aria-label="upload picture"
+                        component="span"
+                      >
+                        <PhotoIcon />
+                      </Button>
+                      {/* <IconButton
+                        style={{
+                          color: !message ? "grey" : logo ? "green" : "red",
+                        }}
+                        aria-label="upload picture"
+                        component="span"
+                        disabled={logo}
+                      >
+                        <PhotoCamera />
+                        {logo ? <CheckIcon /> : <ClearIcon />}
+                      </IconButton> */}
+                    </label>
+
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      style={{ marginLeft: "10px" }}
+                      onClick={handleVideoOpen}
+                    >
+                      <OndemandVideoIcon />
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      style={{ marginLeft: "10px" }}
+                      onClick={handlePostOpen}
+                    >
+                      <InsertEmoticonIcon />
+                    </Button>
+                  </DialogContent>
+
+                  <DialogActions style={{ alignSelf: "center" }}>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      color="primary"
+                      disabled={!message}
+                      endIcon={<SendIcon />}
+                      className="buttonSend"
+                      onClick={sendPost}
+                    >
+                      Post
+                    </Button>
+                  </DialogActions>
+                </Dialog>
               </Grid>
             </Grid>
 
             <Grid item xs={12}>
-              <List>
+              {/* <List>
                 <ListItem>
                   <input
                     accept="image/*"
@@ -246,7 +458,7 @@ export default function Posts() {
                     )}
                   </ListItemAvatar>
                 </ListItem>
-              </List>
+              </List> */}
             </Grid>
 
             {isLoading ? (
@@ -329,7 +541,21 @@ export default function Posts() {
                                   title={message.User.pseudo}
                                   subheader={message.createdAt.slice(0, 10)}
                                 />
-                                {message.imageUrl ? (
+                                {message.imageUrl &&
+                                message.imageUrl.includes(
+                                  "https://www.youtube.com"
+                                ) ? (
+                                  <CardMedia title="video">
+                                    <iframe
+                                      width="100%"
+                                      height="300"
+                                      src={message.imageUrl.replace(
+                                        "watch?v=",
+                                        "embed/"
+                                      )}
+                                    ></iframe>
+                                  </CardMedia>
+                                ) : message.imageUrl ? (
                                   <CardMedia
                                     style={{ height: 0, paddingTop: "56.25%" }}
                                     image={message.imageUrl}
