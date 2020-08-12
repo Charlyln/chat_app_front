@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import List from "@material-ui/core/List";
+import React, { useEffect, useState } from 'react'
+import List from '@material-ui/core/List'
 import {
   TextField,
   Button,
@@ -21,196 +21,210 @@ import {
   ListItemText,
   ListItemAvatar,
   Paper,
-  ListItemSecondaryAction,
-} from "@material-ui/core";
-import Axios from "axios";
-import "./messenger.css";
-import { Redirect } from "react-router-dom";
-import Alert from "@material-ui/lab/Alert";
-import Favorite from "@material-ui/icons/Favorite";
-import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
-import { apiUrl } from "../../apiUrl";
-import MyAppBar from "./AppBar/MyAppBar";
-import HelpIcon from "@material-ui/icons/Help";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import ExpandLessIcon from "@material-ui/icons/ExpandLess";
-import SendIcon from "@material-ui/icons/Send";
-import PhotoIcon from "@material-ui/icons/Photo";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import OndemandVideoIcon from "@material-ui/icons/OndemandVideo";
-import InsertEmoticonIcon from "@material-ui/icons/InsertEmoticon";
+  ListItemSecondaryAction
+} from '@material-ui/core'
+import Axios from 'axios'
+import './messenger.css'
+import { Redirect } from 'react-router-dom'
+import Alert from '@material-ui/lab/Alert'
+import Favorite from '@material-ui/icons/Favorite'
+import FavoriteBorder from '@material-ui/icons/FavoriteBorder'
+import { apiUrl } from '../../apiUrl'
+import MyAppBar from './AppBar/MyAppBar'
+import HelpIcon from '@material-ui/icons/Help'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import ExpandLessIcon from '@material-ui/icons/ExpandLess'
+import SendIcon from '@material-ui/icons/Send'
+import PhotoIcon from '@material-ui/icons/Photo'
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import OndemandVideoIcon from '@material-ui/icons/OndemandVideo'
+import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon'
 
 export default function Posts() {
-  const [dataMessages, setdataPosts] = useState([]);
+  const [dataMessages, setdataPosts] = useState([])
   // const [userData, setUserData] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [message, setMessage] = useState("");
-  const [UserId] = useState(window.localStorage.getItem("uuid"));
-  const [userdata, setuserdata] = useState([]);
-  const [open, setOpen] = useState(false);
-  const [logo, setLogo] = useState("");
-  const [postId, setPostId] = useState("");
-  const [comment, setComment] = useState("");
-  const [arrayPostId] = useState([]);
-  const [open2, setOpen2] = useState(false);
-  const [photo, setPhoto] = useState(false);
-  const [video, setVideo] = useState(false);
-  const [imageDialog, setImageDialog] = useState("");
-  const [youtubeUrl, setYoutubeUrl] = useState("");
+  const [isLoading, setIsLoading] = useState(true)
+  const [message, setMessage] = useState('')
+  const [UserId] = useState(window.localStorage.getItem('uuid'))
+  const [userdata, setuserdata] = useState([])
+  const [open, setOpen] = useState(false)
+  const [logo, setLogo] = useState('')
+  const [postId, setPostId] = useState('')
+  const [comment, setComment] = useState('')
+  const [arrayPostId] = useState([])
+  const [open2, setOpen2] = useState(false)
+  const [photo, setPhoto] = useState(false)
+  const [video, setVideo] = useState(false)
+  const [imageDialog, setImageDialog] = useState('')
+  const [youtubeUrl, setYoutubeUrl] = useState('')
+  const [followData, setFollowDatas] = useState([])
 
   const handlePhotoOpen = () => {
-    setOpen2(true);
-    setPhoto(true);
-    setVideo(false);
-    setImageDialog("");
-    setYoutubeUrl("");
-  };
+    setOpen2(true)
+    setPhoto(true)
+    setVideo(false)
+    setImageDialog('')
+    setYoutubeUrl('')
+  }
 
   const handlePostOpen = () => {
-    setOpen2(true);
-    setVideo(false);
-    setPhoto(false);
-    setYoutubeUrl("");
-  };
+    setOpen2(true)
+    setVideo(false)
+    setPhoto(false)
+    setYoutubeUrl('')
+    setLogo('')
+  }
   const handleVideoOpen = () => {
-    setOpen2(true);
-    setVideo(true);
-    setPhoto(false);
-    setImageDialog("");
-  };
+    setOpen2(true)
+    setVideo(true)
+    setPhoto(false)
+    setImageDialog('')
+    setLogo('')
+  }
 
   const handleClose3 = () => {
-    setOpen2(false);
-  };
+    setOpen2(false)
+  }
 
   const handleLogo = (e) => {
     if (e.target.files[0]) {
-      setLogo(e.target.files[0]);
-      setImageDialog(URL.createObjectURL(e.target.files[0]));
+      setLogo(e.target.files[0])
+      setImageDialog(URL.createObjectURL(e.target.files[0]))
     }
-  };
+  }
 
   const handleClose = (event, reason) => {
-    setOpen(false);
-  };
+    setOpen(false)
+  }
 
   useEffect(() => {
-    getPosts();
-    getUser();
-  }, []);
+    getPosts()
+    getUser()
+    getFollows()
+  }, [])
 
   const getPosts = async () => {
     try {
-      const res = await Axios.get(`${apiUrl}/posts`);
-      setdataPosts(res.data);
+      const res = await Axios.get(`${apiUrl}/posts`)
+      setdataPosts(res.data)
 
       const timer = setTimeout(() => {
-        setIsLoading(false);
-      }, 1000);
-      return () => clearTimeout(timer);
+        setIsLoading(false)
+      }, 1000)
+      return () => clearTimeout(timer)
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
-  };
+  }
 
   const putLike = async (e) => {
-    const id = e.target.id;
-    const likeObject = userdata.Likes.find((like) => like.PostUuid === id);
+    const id = e.target.id
+    const likeObject = userdata.Likes.find((like) => like.PostUuid === id)
     if (likeObject) {
-      const likeId = likeObject.id;
-      console.log(likeObject);
+      const likeId = likeObject.id
+      console.log(likeObject)
 
-      await Axios.delete(`${apiUrl}/likes/${likeId}`);
+      await Axios.delete(`${apiUrl}/likes/${likeId}`)
     } else {
       await Axios.post(`${apiUrl}/likes`, {
         PostUuid: id,
-        UserUuid: UserId,
-      });
+        UserUuid: UserId
+      })
     }
 
-    getPosts();
-    getUser();
-  };
+    getPosts()
+    getUser()
+  }
+
+  const getFollows = async () => {
+    try {
+      const UserId = window.localStorage.getItem('uuid')
+      const res = await Axios.get(`${apiUrl}/followers/${UserId}`)
+      setFollowDatas(res.data)
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
   const postComment = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
-      const UserId = window.localStorage.getItem("uuid");
+      const UserId = window.localStorage.getItem('uuid')
       await Axios.post(`${apiUrl}/comments`, {
         content: comment,
         UserUuid: UserId,
-        PostUuid: postId,
-      });
+        PostUuid: postId
+      })
 
-      setComment("");
+      setComment('')
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
-  };
+  }
 
   const getUser = async () => {
-    const id = window.localStorage.getItem("uuid");
+    const id = window.localStorage.getItem('uuid')
     try {
-      const res = await Axios.get(`${apiUrl}/users/${id}`);
-      setuserdata(res.data);
+      const res = await Axios.get(`${apiUrl}/users/${id}`)
+      setuserdata(res.data)
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
-  };
+  }
 
   useEffect(() => {
     const interval = setInterval(() => {
-      getPosts();
-    }, 2000);
-    return () => clearInterval(interval);
-  }, []);
+      getPosts()
+    }, 2000)
+    return () => clearInterval(interval)
+  }, [])
 
   const openInfos = () => {
-    setOpen(true);
-  };
+    setOpen(true)
+  }
 
   const sendPost = async (e) => {
-    e.preventDefault();
-    const imgurToken = "44670bbff769f1a";
+    e.preventDefault()
+    const imgurToken = '44670bbff769f1a'
 
     try {
       if (logo && !youtubeUrl) {
-        const res = await Axios.post("https://api.imgur.com/3/image", logo, {
+        const res = await Axios.post('https://api.imgur.com/3/image', logo, {
           headers: {
-            Authorization: `Client-ID ${imgurToken}`,
-          },
-        });
+            Authorization: `Client-ID ${imgurToken}`
+          }
+        })
         await Axios.post(`${apiUrl}/posts`, {
           content: message,
           UserUuid: UserId,
-          imageUrl: res.data.data.link,
-        });
+          imageUrl: res.data.data.link
+        })
       } else if (youtubeUrl) {
         await Axios.post(`${apiUrl}/posts`, {
           content: message,
           UserUuid: UserId,
-          imageUrl: youtubeUrl,
-        });
+          imageUrl: youtubeUrl
+        })
       } else {
         await Axios.post(`${apiUrl}/posts`, {
           content: message,
-          UserUuid: UserId,
-        });
+          UserUuid: UserId
+        })
       }
 
-      setMessage("");
-      setLogo("");
-      setOpen2(false);
+      setMessage('')
+      setLogo('')
+      setOpen2(false)
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
-  };
+  }
 
-  if (!window.localStorage.getItem("uuid")) {
-    return <Redirect to="/" />;
+  if (!window.localStorage.getItem('uuid')) {
+    return <Redirect to="/" />
   }
   return (
     <>
@@ -219,8 +233,8 @@ export default function Posts() {
       <Grid
         container
         alignItems="center"
-        style={{ marginTop: "70px" }}
-        className={open2 ? "marginDialog" : ""}
+        style={{ marginTop: '70px' }}
+        className={open2 ? 'marginDialog' : ''}
         direction="column"
       >
         <Grid container>
@@ -272,7 +286,7 @@ export default function Posts() {
                       variant="outlined"
                       color="primary"
                       startIcon={<OndemandVideoIcon />}
-                      style={{ marginLeft: "10px" }}
+                      style={{ marginLeft: '10px' }}
                       onClick={handleVideoOpen}
                     >
                       Video
@@ -290,9 +304,9 @@ export default function Posts() {
                 >
                   <DialogTitle
                     id="alert-dialog-slide-title"
-                    style={{ alignSelf: "center" }}
+                    style={{ alignSelf: 'center' }}
                   >
-                    {"Create Post"}
+                    {'Create Post'}
                   </DialogTitle>
 
                   <DialogContent>
@@ -318,13 +332,13 @@ export default function Posts() {
                       />
                     </DialogContent>
                   ) : (
-                    ""
+                    ''
                   )}
                   {photo ? (
                     <DialogContent>
                       <Card>
                         <CardMedia
-                          style={{ height: 0, paddingTop: "56.25%" }}
+                          style={{ height: 0, paddingTop: '56.25%' }}
                           image={imageDialog}
                           title="Photo"
                         />
@@ -338,13 +352,13 @@ export default function Posts() {
                             title="oneVideo"
                             width="100%"
                             height="220"
-                            src={youtubeUrl.replace("watch?v=", "embed/")}
+                            src={youtubeUrl.replace('watch?v=', 'embed/')}
                           ></iframe>
                         </CardMedia>
                       </Paper>
                     </DialogContent>
                   ) : (
-                    ""
+                    ''
                   )}
 
                   <DialogContent>
@@ -352,14 +366,14 @@ export default function Posts() {
                       accept="image/*"
                       id="icon-button-file"
                       type="file"
-                      style={{ display: "none" }}
+                      style={{ display: 'none' }}
                       files={logo}
                       onChange={handleLogo}
                     />
 
                     <label htmlFor="icon-button-file">
                       <Button
-                        variant="outlined"
+                        variant={photo ? 'contained' : 'outlined'}
                         color="primary"
                         onClick={handlePhotoOpen}
                         aria-label="upload picture"
@@ -381,24 +395,26 @@ export default function Posts() {
                     </label>
 
                     <Button
-                      variant="outlined"
+                      variant={video ? 'contained' : 'outlined'}
                       color="primary"
-                      style={{ marginLeft: "10px" }}
+                      style={{ marginLeft: '10px' }}
                       onClick={handleVideoOpen}
                     >
                       <OndemandVideoIcon />
                     </Button>
                     <Button
-                      variant="outlined"
+                      variant={
+                        open2 && !video && !photo ? 'contained' : 'outlined'
+                      }
                       color="primary"
-                      style={{ marginLeft: "10px" }}
+                      style={{ marginLeft: '10px' }}
                       onClick={handlePostOpen}
                     >
                       <InsertEmoticonIcon />
                     </Button>
                   </DialogContent>
 
-                  <DialogActions style={{ alignSelf: "center" }}>
+                  <DialogActions style={{ alignSelf: 'center' }}>
                     <Button
                       type="submit"
                       variant="contained"
@@ -458,23 +474,23 @@ export default function Posts() {
             </Grid>
 
             {isLoading ? (
-              ""
+              ''
             ) : (
               <Snackbar
                 open={open}
                 autoHideDuration={20000}
-                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
                 onClose={handleClose}
               >
                 <Alert
                   onClose={handleClose}
                   severity="info"
-                  style={{ width: "330px" }}
+                  style={{ width: '330px' }}
                 >
                   Welcome to the wall <strong>{userdata.pseudo}</strong> ! You
                   can send posts with or without image and see posts from users
                   you follow ! If you don't have any yet, go to the next page to
-                  add some{" "}
+                  add some{' '}
                   <span role="img" aria-label="donut">
                     😀
                   </span>
@@ -505,220 +521,270 @@ export default function Posts() {
                 </>
               ) : (
                 <>
-                  <Fade in={true}>
-                    <List style={{ width: "500px" }}>
-                      {dataMessages
-                        .filter((message) =>
-                          message.User.Followers.find(
-                            (element) => element.followerId === UserId
-                          )
-                        )
-                        .sort(function (a, b) {
-                          return new Date(b.createdAt) - new Date(a.createdAt);
-                        })
-                        .map((message, i) => {
-                          return (
-                            <Paper elevation={5}>
-                              <Card
-                                style={{
-                                  maxWidth: "500px",
-                                  margin: "20px 0px",
-                                }}
-                              >
-                                <CardHeader
-                                  avatar={
-                                    <Avatar
-                                      aria-label="recipe"
-                                      src={message.User.avatar}
-                                    >
-                                      R
-                                    </Avatar>
-                                  }
-                                  title={message.User.pseudo}
-                                  subheader={message.createdAt.slice(0, 10)}
-                                />
-                                {message.imageUrl &&
-                                message.imageUrl.includes(
-                                  "https://www.youtube.com"
-                                ) ? (
-                                  <CardMedia title="video">
-                                    <iframe
-                                      title="otherVideo"
-                                      width="100%"
-                                      height="300"
-                                      src={message.imageUrl.replace(
-                                        "watch?v=",
-                                        "embed/"
-                                      )}
-                                    ></iframe>
-                                  </CardMedia>
-                                ) : message.imageUrl ? (
-                                  <CardMedia
-                                    style={{ height: 0, paddingTop: "56.25%" }}
-                                    image={message.imageUrl}
-                                    title="Paella dish"
-                                  />
-                                ) : (
-                                  ""
-                                )}
-                                <CardContent>
-                                  <Typography>{message.content}</Typography>
-                                </CardContent>
+                  {followData.length === 1 ? (
+                    <Fade in={true}>
+                      <List style={{ width: '500px' }}>
+                        <Paper elevation={5}>
+                          <Card
+                            style={{
+                              maxWidth: '500px',
+                              margin: '20px 0px'
+                            }}
+                          >
+                            <CardHeader
+                              avatar={
+                                <Avatar
+                                  src="https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/8bff6d42719331.57d51f37571d7.jpg"
+                                  aria-label="recipe"
+                                >
+                                  R
+                                </Avatar>
+                              }
+                              title="Eve"
+                            />
+                            <CardMedia
+                              style={{ height: 0, paddingTop: '56.25%' }}
+                              image="https://media.giphy.com/media/ASd0Ukj0y3qMM/giphy.gif"
+                              title="Paella dish"
+                            />
 
-                                <CardActions disableSpacing>
-                                  <FormControlLabel
-                                    className="like"
-                                    control={
-                                      <Checkbox
-                                        icon={
-                                          <FavoriteBorder fontSize="small" />
-                                        }
-                                        checkedIcon={
-                                          <Favorite fontSize="small" />
-                                        }
-                                        id={message.uuid}
-                                        name={message.likes}
-                                        onChange={putLike}
-                                        checked={
-                                          message.Likes.find(
-                                            (like) => like.UserUuid === UserId
-                                          )
-                                            ? true
-                                            : false
-                                        }
-                                      />
+                            <CardContent>
+                              <Typography>
+                                {' '}
+                                Welcome to the wall{' '}
+                                <strong>{userdata.pseudo}</strong> ! You can
+                                send posts with or without image and see posts
+                                from users you follow ! If you don't have any
+                                yet, go to the next page to add some{' '}
+                                <span role="img" aria-label="donut">
+                                  😀
+                                </span>
+                              </Typography>
+                            </CardContent>
+                          </Card>
+                        </Paper>
+                      </List>
+                    </Fade>
+                  ) : (
+                    <Fade in={true}>
+                      <List style={{ width: '500px' }}>
+                        {dataMessages
+                          .filter((message) =>
+                            message.User.Followers.find(
+                              (element) => element.followerId === UserId
+                            )
+                          )
+                          .sort(function (a, b) {
+                            return new Date(b.createdAt) - new Date(a.createdAt)
+                          })
+
+                          .map((message, i) => {
+                            return (
+                              <Paper elevation={5}>
+                                <Card
+                                  style={{
+                                    maxWidth: '500px',
+                                    margin: '20px 0px'
+                                  }}
+                                >
+                                  <CardHeader
+                                    avatar={
+                                      <Avatar
+                                        aria-label="recipe"
+                                        src={message.User.avatar}
+                                      >
+                                        R
+                                      </Avatar>
                                     }
-                                    label={
-                                      message.Likes.length > 0
-                                        ? message.Likes.length
-                                        : ""
-                                    }
+                                    title={message.User.pseudo}
+                                    subheader={message.createdAt.slice(0, 10)}
                                   />
-                                  <Button
-                                    style={{ marginLeft: "auto" }}
-                                    onClick={() => {
-                                      if (
+                                  {message.imageUrl &&
+                                  message.imageUrl.includes(
+                                    'https://www.youtube.com'
+                                  ) ? (
+                                    <CardMedia title="video">
+                                      <iframe
+                                        title="otherVideo"
+                                        width="100%"
+                                        height="300"
+                                        src={message.imageUrl.replace(
+                                          'watch?v=',
+                                          'embed/'
+                                        )}
+                                      ></iframe>
+                                    </CardMedia>
+                                  ) : message.imageUrl ? (
+                                    <CardMedia
+                                      style={{
+                                        height: 0,
+                                        paddingTop: '56.25%'
+                                      }}
+                                      image={message.imageUrl}
+                                      title="Paella dish"
+                                    />
+                                  ) : (
+                                    ''
+                                  )}
+                                  <CardContent>
+                                    <Typography>{message.content}</Typography>
+                                  </CardContent>
+
+                                  <CardActions disableSpacing>
+                                    <FormControlLabel
+                                      className="like"
+                                      control={
+                                        <Checkbox
+                                          icon={
+                                            <FavoriteBorder fontSize="small" />
+                                          }
+                                          checkedIcon={
+                                            <Favorite fontSize="small" />
+                                          }
+                                          id={message.uuid}
+                                          name={message.likes}
+                                          onChange={putLike}
+                                          checked={
+                                            message.Likes.find(
+                                              (like) => like.UserUuid === UserId
+                                            )
+                                              ? true
+                                              : false
+                                          }
+                                        />
+                                      }
+                                      label={
+                                        message.Likes.length > 0
+                                          ? message.Likes.length
+                                          : ''
+                                      }
+                                    />
+                                    <Button
+                                      style={{ marginLeft: 'auto' }}
+                                      onClick={() => {
+                                        if (
+                                          arrayPostId.find(
+                                            (postId) => postId === message.uuid
+                                          )
+                                        ) {
+                                          const index = arrayPostId.indexOf(
+                                            message.uuid
+                                          )
+                                          if (index > -1) {
+                                            arrayPostId.splice(index, 1)
+                                          }
+                                        } else {
+                                          arrayPostId.push(message.uuid)
+                                        }
+                                      }}
+                                      size="small"
+                                      endIcon={
                                         arrayPostId.find(
                                           (postId) => postId === message.uuid
+                                        ) ? (
+                                          <ExpandLessIcon />
+                                        ) : (
+                                          <ExpandMoreIcon />
                                         )
-                                      ) {
-                                        const index = arrayPostId.indexOf(
-                                          message.uuid
-                                        );
-                                        if (index > -1) {
-                                          arrayPostId.splice(index, 1);
-                                        }
-                                      } else {
-                                        arrayPostId.push(message.uuid);
                                       }
-                                    }}
-                                    size="small"
-                                    endIcon={
-                                      arrayPostId.find(
-                                        (postId) => postId === message.uuid
-                                      ) ? (
-                                        <ExpandLessIcon />
-                                      ) : (
-                                        <ExpandMoreIcon />
-                                      )
-                                    }
-                                  >{`${message.Comments.length} comments`}</Button>
-                                </CardActions>
-                                <Collapse
-                                  in={arrayPostId.find(
-                                    (postId) => postId === message.uuid
-                                  )}
-                                  timeout="auto"
-                                  unmountOnExit
-                                >
-                                  <CardContent>
-                                    <List>
-                                      {message.Comments.length > 0 ? (
-                                        <>
-                                          {message.Comments.sort(function (
-                                            a,
-                                            b
-                                          ) {
-                                            return (
-                                              new Date(a.createdAt) -
-                                              new Date(b.createdAt)
-                                            );
-                                          }).map((comment) => (
-                                            <ListItem>
-                                              <ListItemAvatar>
-                                                <Avatar
-                                                  alt={comment.User.pseudo}
-                                                  src={comment.User.avatar}
-                                                />
-                                              </ListItemAvatar>
-                                              <ListItemText
-                                                primary={comment.User.pseudo}
-                                                secondary={comment.content}
-                                              />
-                                              <ListItemSecondaryAction>
+                                    >{`${message.Comments.length} comments`}</Button>
+                                  </CardActions>
+                                  <Collapse
+                                    in={arrayPostId.find(
+                                      (postId) => postId === message.uuid
+                                    )}
+                                    timeout="auto"
+                                    unmountOnExit
+                                  >
+                                    <CardContent>
+                                      <List>
+                                        {message.Comments.length > 0 ? (
+                                          <>
+                                            {message.Comments.sort(function (
+                                              a,
+                                              b
+                                            ) {
+                                              return (
+                                                new Date(a.createdAt) -
+                                                new Date(b.createdAt)
+                                              )
+                                            }).map((comment) => (
+                                              <ListItem>
+                                                <ListItemAvatar>
+                                                  <Avatar
+                                                    alt={comment.User.pseudo}
+                                                    src={comment.User.avatar}
+                                                  />
+                                                </ListItemAvatar>
                                                 <ListItemText
-                                                  secondary={comment.createdAt.slice(
-                                                    0,
-                                                    10
-                                                  )}
+                                                  primary={comment.User.pseudo}
+                                                  secondary={comment.content}
                                                 />
-                                              </ListItemSecondaryAction>
-                                            </ListItem>
-                                          ))}
-                                        </>
-                                      ) : (
-                                        ""
-                                      )}
-                                      <ListItem alignItems="flex-end">
-                                        <ListItemAvatar>
-                                          <Avatar
-                                            alt={userdata.pseudo}
-                                            src={userdata.avatar}
-                                          />
-                                        </ListItemAvatar>
-                                        <form onSubmit={postComment}>
-                                          <TextField
-                                            id="outlined-basic"
-                                            label="Comment"
-                                            variant="outlined"
-                                            value={comment}
-                                            size="small"
-                                            onChange={(e) =>
-                                              setComment(e.target.value)
-                                            }
-                                          />
-                                          <Button
-                                            type="submit"
-                                            variant="contained"
-                                            color="primary"
-                                            disabled={!comment}
-                                            endIcon={<SendIcon />}
-                                            size="small"
-                                            onClick={() =>
-                                              setPostId(message.uuid)
-                                            }
-                                            style={{
-                                              margin: "5px 0px 0px 10px",
-                                            }}
-                                          >
-                                            Send
-                                          </Button>
-                                        </form>
-                                      </ListItem>
-                                    </List>
-                                  </CardContent>
-                                </Collapse>
-                              </Card>
-                            </Paper>
-                          );
-                        })}
-                    </List>
-                  </Fade>
+                                                <ListItemSecondaryAction>
+                                                  <ListItemText
+                                                    secondary={comment.createdAt.slice(
+                                                      0,
+                                                      10
+                                                    )}
+                                                  />
+                                                </ListItemSecondaryAction>
+                                              </ListItem>
+                                            ))}
+                                          </>
+                                        ) : (
+                                          ''
+                                        )}
+                                        <ListItem alignItems="flex-end">
+                                          <ListItemAvatar>
+                                            <Avatar
+                                              alt={userdata.pseudo}
+                                              src={userdata.avatar}
+                                            />
+                                          </ListItemAvatar>
+                                          <form onSubmit={postComment}>
+                                            <TextField
+                                              id="outlined-basic"
+                                              label="Comment"
+                                              variant="outlined"
+                                              value={comment}
+                                              size="small"
+                                              onChange={(e) =>
+                                                setComment(e.target.value)
+                                              }
+                                            />
+                                            <Button
+                                              type="submit"
+                                              variant="contained"
+                                              color="primary"
+                                              disabled={!comment}
+                                              endIcon={<SendIcon />}
+                                              size="small"
+                                              onClick={() =>
+                                                setPostId(message.uuid)
+                                              }
+                                              style={{
+                                                margin: '5px 0px 0px 10px'
+                                              }}
+                                            >
+                                              Send
+                                            </Button>
+                                          </form>
+                                        </ListItem>
+                                      </List>
+                                    </CardContent>
+                                  </Collapse>
+                                </Card>
+                              </Paper>
+                            )
+                          })}
+                      </List>
+                    </Fade>
+                  )}
                 </>
               )}
             </Grid>
           </Grid>
-          <Grid item xs={2} sm={2} md={2} lg={2} style={{ textAlign: "end" }}>
+          <Grid item xs={2} sm={2} md={2} lg={2} style={{ textAlign: 'end' }}>
             <IconButton onClick={openInfos}>
               <HelpIcon />
             </IconButton>
@@ -726,5 +792,5 @@ export default function Posts() {
         </Grid>
       </Grid>
     </>
-  );
+  )
 }

@@ -71,7 +71,7 @@ export default function Messenger() {
 
       const timer = setTimeout(() => {
         setIsLoading(false);
-      }, 1000);
+      }, 500);
       return () => clearTimeout(timer);
     } catch (err) {
       console.log(err);

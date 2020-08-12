@@ -41,7 +41,7 @@ export default function Users() {
       setusersdata(res.data);
       const timer = setTimeout(() => {
         setIsLoading(false);
-      }, 1000);
+      }, 500);
       return () => clearTimeout(timer);
     } catch (err) {
       console.log(err);
