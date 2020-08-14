@@ -11,29 +11,18 @@ import {
   CardMedia,
   CardContent,
   Typography,
-  CardActions,
   IconButton,
-  FormControlLabel,
-  Checkbox,
   Fade,
-  Collapse,
   ListItem,
-  ListItemText,
-  ListItemAvatar,
-  Paper,
-  ListItemSecondaryAction
+  Paper
 } from '@material-ui/core'
 import Axios from 'axios'
 import './messenger.css'
 import { Redirect } from 'react-router-dom'
 import Alert from '@material-ui/lab/Alert'
-import Favorite from '@material-ui/icons/Favorite'
-import FavoriteBorder from '@material-ui/icons/FavoriteBorder'
 import { apiUrl } from '../../apiUrl'
 import MyAppBar from './AppBar/MyAppBar'
 import HelpIcon from '@material-ui/icons/Help'
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import ExpandLessIcon from '@material-ui/icons/ExpandLess'
 import SendIcon from '@material-ui/icons/Send'
 import PhotoIcon from '@material-ui/icons/Photo'
 import Dialog from '@material-ui/core/Dialog'
@@ -42,6 +31,7 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import OndemandVideoIcon from '@material-ui/icons/OndemandVideo'
 import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon'
+import CardCollapse from './CardCollapse'
 
 export default function Posts() {
   const [dataMessages, setdataPosts] = useState([])
@@ -630,149 +620,17 @@ export default function Posts() {
                                     <Typography>{message.content}</Typography>
                                   </CardContent>
 
-                                  <CardActions disableSpacing>
-                                    <FormControlLabel
-                                      className="like"
-                                      control={
-                                        <Checkbox
-                                          icon={
-                                            <FavoriteBorder fontSize="small" />
-                                          }
-                                          checkedIcon={
-                                            <Favorite fontSize="small" />
-                                          }
-                                          id={message.uuid}
-                                          name={message.likes}
-                                          onChange={putLike}
-                                          checked={
-                                            message.Likes.find(
-                                              (like) => like.UserUuid === UserId
-                                            )
-                                              ? true
-                                              : false
-                                          }
-                                        />
-                                      }
-                                      label={
-                                        message.Likes.length > 0
-                                          ? message.Likes.length
-                                          : ''
-                                      }
-                                    />
-                                    <Button
-                                      style={{ marginLeft: 'auto' }}
-                                      onClick={() => {
-                                        if (
-                                          arrayPostId.find(
-                                            (postId) => postId === message.uuid
-                                          )
-                                        ) {
-                                          const index = arrayPostId.indexOf(
-                                            message.uuid
-                                          )
-                                          if (index > -1) {
-                                            arrayPostId.splice(index, 1)
-                                          }
-                                        } else {
-                                          arrayPostId.push(message.uuid)
-                                        }
-                                      }}
-                                      size="small"
-                                      endIcon={
-                                        arrayPostId.find(
-                                          (postId) => postId === message.uuid
-                                        ) ? (
-                                          <ExpandLessIcon />
-                                        ) : (
-                                          <ExpandMoreIcon />
-                                        )
-                                      }
-                                    >{`${message.Comments.length} comments`}</Button>
-                                  </CardActions>
-                                  <Collapse
-                                    in={arrayPostId.find(
-                                      (postId) => postId === message.uuid
-                                    )}
-                                    timeout="auto"
-                                    unmountOnExit
-                                  >
-                                    <CardContent>
-                                      <List>
-                                        {message.Comments.length > 0 ? (
-                                          <>
-                                            {message.Comments.sort(function (
-                                              a,
-                                              b
-                                            ) {
-                                              return (
-                                                new Date(a.createdAt) -
-                                                new Date(b.createdAt)
-                                              )
-                                            }).map((comment) => (
-                                              <ListItem>
-                                                <ListItemAvatar>
-                                                  <Avatar
-                                                    alt={comment.User.pseudo}
-                                                    src={comment.User.avatar}
-                                                  />
-                                                </ListItemAvatar>
-                                                <ListItemText
-                                                  primary={comment.User.pseudo}
-                                                  secondary={comment.content}
-                                                />
-                                                <ListItemSecondaryAction>
-                                                  <ListItemText
-                                                    secondary={comment.createdAt.slice(
-                                                      0,
-                                                      10
-                                                    )}
-                                                  />
-                                                </ListItemSecondaryAction>
-                                              </ListItem>
-                                            ))}
-                                          </>
-                                        ) : (
-                                          ''
-                                        )}
-                                        <ListItem alignItems="flex-end">
-                                          <ListItemAvatar>
-                                            <Avatar
-                                              alt={userdata.pseudo}
-                                              src={userdata.avatar}
-                                            />
-                                          </ListItemAvatar>
-                                          <form onSubmit={postComment}>
-                                            <TextField
-                                              id="outlined-basic"
-                                              label="Comment"
-                                              variant="outlined"
-                                              value={comment}
-                                              size="small"
-                                              onChange={(e) =>
-                                                setComment(e.target.value)
-                                              }
-                                            />
-                                            <Button
-                                              type="submit"
-                                              variant="contained"
-                                              color="primary"
-                                              disabled={!comment}
-                                              endIcon={<SendIcon />}
-                                              size="small"
-                                              onClick={() =>
-                                                setPostId(message.uuid)
-                                              }
-                                              style={{
-                                                margin: '5px 0px 0px 10px'
-                                              }}
-                                            >
-                                              Send
-                                            </Button>
-                                          </form>
-                                        </ListItem>
-                                      </List>
-                                    </CardContent>
-                                  </Collapse>
+                                  <CardCollapse
+                                    message={message}
+                                    putLike={putLike}
+                                    UserId={UserId}
+                                    arrayPostId={arrayPostId}
+                                    userdata={userdata}
+                                    postComment={postComment}
+                                    comment={comment}
+                                    setComment={setComment}
+                                    setPostId={setPostId}
+                                  />
                                 </Card>
                               </Paper>
                             )

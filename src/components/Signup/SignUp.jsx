@@ -56,12 +56,13 @@ const SignUp = () => {
     try {
       const res = await Axios.get(`${apiUrl}/users/${id}`)
       setuserdata(res.data)
+    } catch (err) {
+      console.log(err)
+    } finally {
       const timer = setTimeout(() => {
         setisLoading(false)
       }, 500)
       return () => clearTimeout(timer)
-    } catch (err) {
-      console.log(err)
     }
   }
 
