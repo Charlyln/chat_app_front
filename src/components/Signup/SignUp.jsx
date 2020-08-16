@@ -33,7 +33,7 @@ const SignUp = () => {
   const [userdata, setuserdata] = useState('')
   const [signupLoading, setSignupLoading] = useState(false)
   const [signupSuccess, setSignupSuccess] = useState(false)
-  const [redirect, setRedirect] = useState(false)
+  // const [redirect, setRedirect] = useState(false)
 
   const getMyAvatar = async () => {
     const imgurToken = '44670bbff769f1a'
@@ -88,15 +88,14 @@ const SignUp = () => {
         getUser()
         const timer1 = setTimeout(() => {
           setSignupLoading(false)
-        }, 1000)
-        setSignupSuccess(true)
+        }, 2000)
 
         const timer2 = setTimeout(() => {
-          setSignupSuccess(false)
-          setRedirect(true)
-        }, 3000)
+          setSignupSuccess(true)
+          // setRedirect(true)
+        }, 2000)
 
-        return () => clearTimeout(timer2, timer1)
+        return () => clearTimeout(timer1, timer2)
       } else if (pseudo && !logo) {
         setOpen2(true)
       } else if (!pseudo && logo) {
@@ -119,14 +118,13 @@ const SignUp = () => {
     )
   }
 
-  if (
-    !isLoading &&
-    userdata &&
-    window.localStorage.getItem('uuid') &&
-    redirect
-  ) {
+  if (!isLoading && userdata && window.localStorage.getItem('uuid')) {
     return <Redirect to="/posts" />
   }
+
+  // if (redirect && signupSuccess) {
+  //   return <Redirect to="/posts" />
+  // }
 
   return (
     <>
