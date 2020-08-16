@@ -15,6 +15,8 @@ import { Toolbar, AppBar } from '@material-ui/core'
 import { apiUrl } from '../../apiUrl'
 import CloudUploadIcon from '@material-ui/icons/CloudUpload'
 import PersonIcon from '@material-ui/icons/Person'
+import CheckIcon from '@material-ui/icons/Check'
+import SendIcon from '@material-ui/icons/Send'
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />
@@ -22,7 +24,6 @@ function Alert(props) {
 
 const SignUp = () => {
   const [pseudo, setPseudo] = useState('')
-  const [open, setOpen] = useState(false)
   const [open2, setOpen2] = useState(false)
   const [open3, setOpen3] = useState(false)
   const [open4, setOpen4] = useState(false)
@@ -30,10 +31,9 @@ const SignUp = () => {
   const [myAvatar, setMyAvatar] = useState('')
   const [isLoading, setisLoading] = useState(true)
   const [userdata, setuserdata] = useState('')
-
-  const handleClose = () => {
-    setOpen(false)
-  }
+  const [signupLoading, setSignupLoading] = useState(false)
+  const [signupSuccess, setSignupSuccess] = useState(false)
+  const [redirect, setRedirect] = useState(false)
 
   const getMyAvatar = async () => {
     const imgurToken = '44670bbff769f1a'
@@ -72,8 +72,10 @@ const SignUp = () => {
 
   const Signup = async (e) => {
     e.preventDefault()
+
     try {
       if (logo && pseudo) {
+        setSignupLoading(true)
         const res = await axios.post(`${apiUrl}/users`, {
           pseudo,
           avatar: logo
@@ -84,7 +86,17 @@ const SignUp = () => {
           followerId: res.data.uuid
         })
         getUser()
-        setOpen(true)
+        const timer1 = setTimeout(() => {
+          setSignupLoading(false)
+        }, 1000)
+        setSignupSuccess(true)
+
+        const timer2 = setTimeout(() => {
+          setSignupSuccess(false)
+          setRedirect(true)
+        }, 3000)
+
+        return () => clearTimeout(timer2, timer1)
       } else if (pseudo && !logo) {
         setOpen2(true)
       } else if (!pseudo && logo) {
@@ -94,8 +106,6 @@ const SignUp = () => {
       }
     } catch (err) {
       console.log(err)
-    } finally {
-      setOpen(true)
     }
   }
 
@@ -109,7 +119,12 @@ const SignUp = () => {
     )
   }
 
-  if (!isLoading && userdata && window.localStorage.getItem('uuid')) {
+  if (
+    !isLoading &&
+    userdata &&
+    window.localStorage.getItem('uuid') &&
+    redirect
+  ) {
     return <Redirect to="/posts" />
   }
 
@@ -184,15 +199,6 @@ const SignUp = () => {
                 />
 
                 <Snackbar
-                  open={open}
-                  autoHideDuration={2000}
-                  onClose={handleClose}
-                >
-                  <Alert onClose={handleClose} severity="success">
-                    Welcome {pseudo}
-                  </Alert>
-                </Snackbar>
-                <Snackbar
                   open={open2}
                   autoHideDuration={2000}
                   onClose={() => setOpen2(false)}
@@ -232,14 +238,54 @@ const SignUp = () => {
             </Grid>
             <Grid item xs={12} style={{ marginTop: '50px' }}>
               <Grid container alignItems="center" justify="center">
-                <Button
+                {signupLoading ? (
+                  <Button
+                    style={{
+                      width: '90px',
+                      height: '35px'
+                    }}
+                    variant="contained"
+                    color="primary"
+                    disabled={signupLoading}
+                  >
+                    <CircularProgress size={23} />
+                  </Button>
+                ) : signupSuccess ? (
+                  <Button
+                    style={{
+                      backgroundColor: '#4caf50',
+                      width: '90px',
+                      height: '35px'
+                    }}
+                    variant="contained"
+                    endIcon={<CheckIcon />}
+                  >
+                    Done
+                  </Button>
+                ) : (
+                  <Button
+                    type="submit"
+                    style={{
+                      width: '90px',
+                      height: '35px'
+                    }}
+                    variant="contained"
+                    color="primary"
+                    disabled={signupLoading}
+                    endIcon={<SendIcon />}
+                  >
+                    Join
+                  </Button>
+                )}
+
+                {/* <Button
                   type="submit"
                   variant="contained"
                   color="primary"
                   style={{ margin: '20px' }}
                 >
                   Join
-                </Button>
+                </Button> */}
               </Grid>
             </Grid>
           </Grid>

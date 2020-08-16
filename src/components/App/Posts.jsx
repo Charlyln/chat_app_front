@@ -5,24 +5,21 @@ import {
   Button,
   Avatar,
   Grid,
-  Snackbar,
   CardHeader,
   Card,
   CardMedia,
   CardContent,
   Typography,
-  IconButton,
   Fade,
   ListItem,
-  Paper
+  Paper,
+  CircularProgress
 } from '@material-ui/core'
 import Axios from 'axios'
 import './messenger.css'
 import { Redirect } from 'react-router-dom'
-import Alert from '@material-ui/lab/Alert'
 import { apiUrl } from '../../apiUrl'
 import MyAppBar from './AppBar/MyAppBar'
-import HelpIcon from '@material-ui/icons/Help'
 import SendIcon from '@material-ui/icons/Send'
 import PhotoIcon from '@material-ui/icons/Photo'
 import Dialog from '@material-ui/core/Dialog'
@@ -32,6 +29,7 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import OndemandVideoIcon from '@material-ui/icons/OndemandVideo'
 import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon'
 import CardCollapse from './CardCollapse'
+import CheckIcon from '@material-ui/icons/Check'
 
 export default function Posts() {
   const [dataMessages, setdataPosts] = useState([])
@@ -40,7 +38,6 @@ export default function Posts() {
   const [message, setMessage] = useState('')
   const [UserId] = useState(window.localStorage.getItem('uuid'))
   const [userdata, setuserdata] = useState([])
-  const [open, setOpen] = useState(false)
   const [logo, setLogo] = useState('')
   const [postId, setPostId] = useState('')
   const [comment, setComment] = useState('')
@@ -51,6 +48,8 @@ export default function Posts() {
   const [imageDialog, setImageDialog] = useState('')
   const [youtubeUrl, setYoutubeUrl] = useState('')
   const [followData, setFollowDatas] = useState([])
+  const [postLoading, setPostLoading] = useState(false)
+  const [postSuccess, setPostSuccess] = useState(false)
 
   const handlePhotoOpen = () => {
     setOpen2(true)
@@ -84,10 +83,6 @@ export default function Posts() {
       setLogo(e.target.files[0])
       setImageDialog(URL.createObjectURL(e.target.files[0]))
     }
-  }
-
-  const handleClose = (event, reason) => {
-    setOpen(false)
   }
 
   useEffect(() => {
@@ -172,12 +167,9 @@ export default function Posts() {
     return () => clearInterval(interval)
   }, [])
 
-  const openInfos = () => {
-    setOpen(true)
-  }
-
   const sendPost = async (e) => {
     e.preventDefault()
+    setPostLoading(true)
     const imgurToken = '44670bbff769f1a'
 
     try {
@@ -204,10 +196,19 @@ export default function Posts() {
           UserUuid: UserId
         })
       }
+      setPostLoading(false)
+      setPostSuccess(true)
 
-      setMessage('')
-      setLogo('')
-      setOpen2(false)
+      const timer2 = setTimeout(() => {
+        setMessage('')
+        setLogo('')
+        setOpen2(false)
+        setYoutubeUrl('')
+        setImageDialog('')
+        setPostSuccess(false)
+      }, 1000)
+
+      return () => clearTimeout(timer2)
     } catch (err) {
       console.log(err)
     }
@@ -264,14 +265,37 @@ export default function Posts() {
                     />
                   </ListItem> */}
                   <ListItem>
-                    <Button
+                    {/* <Button
                       variant="outlined"
                       color="primary"
                       onClick={handlePhotoOpen}
                       startIcon={<PhotoIcon />}
                     >
                       Photo
-                    </Button>
+                    </Button> */}
+
+                    <input
+                      accept="image/*"
+                      id="icon-button-file1"
+                      type="file"
+                      style={{ display: 'none' }}
+                      files={logo}
+                      onChange={handleLogo}
+                    />
+
+                    <label htmlFor="icon-button-file1">
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={handlePhotoOpen}
+                        aria-label="upload picture"
+                        component="span"
+                        startIcon={<PhotoIcon />}
+                      >
+                        Photo
+                      </Button>
+                    </label>
+
                     <Button
                       variant="outlined"
                       color="primary"
@@ -405,17 +429,51 @@ export default function Posts() {
                   </DialogContent>
 
                   <DialogActions style={{ alignSelf: 'center' }}>
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      color="primary"
-                      disabled={!message}
-                      endIcon={<SendIcon />}
-                      className="buttonSend"
-                      onClick={sendPost}
-                    >
-                      Post
-                    </Button>
+                    {postLoading ? (
+                      <Button
+                        style={{
+                          width: '85px',
+                          height: '35px'
+                        }}
+                        autoFocus
+                        variant="contained"
+                        color="primary"
+                        disabled
+                        className="buttonSend"
+                      >
+                        <CircularProgress size={23} />
+                      </Button>
+                    ) : postSuccess ? (
+                      <Button
+                        style={{
+                          backgroundColor: '#4caf50',
+                          width: '85px',
+                          height: '35px'
+                        }}
+                        variant="contained"
+                        endIcon={<CheckIcon />}
+                        className="buttonSend"
+                      >
+                        Done
+                      </Button>
+                    ) : (
+                      <Button
+                        style={{
+                          width: '85px',
+                          height: '35px'
+                        }}
+                        type="submit"
+                        autoFocus
+                        onClick={sendPost}
+                        variant="contained"
+                        color="primary"
+                        disabled={!message}
+                        className="buttonSend"
+                        endIcon={<SendIcon />}
+                      >
+                        Post
+                      </Button>
+                    )}
                   </DialogActions>
                 </Dialog>
               </Grid>
@@ -462,31 +520,6 @@ export default function Posts() {
                 </ListItem>
               </List> */}
             </Grid>
-
-            {isLoading ? (
-              ''
-            ) : (
-              <Snackbar
-                open={open}
-                autoHideDuration={20000}
-                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                onClose={handleClose}
-              >
-                <Alert
-                  onClose={handleClose}
-                  severity="info"
-                  style={{ width: '330px' }}
-                >
-                  Welcome to the wall <strong>{userdata.pseudo}</strong> ! You
-                  can send posts with or without image and see posts from users
-                  you follow ! If you don't have any yet, go to the next page to
-                  add some{' '}
-                  <span role="img" aria-label="donut">
-                    😀
-                  </span>
-                </Alert>
-              </Snackbar>
-            )}
           </Grid>
 
           <Grid item xs={12} sm={12} md={6} lg={6}>
@@ -543,9 +576,9 @@ export default function Posts() {
                                 {' '}
                                 Welcome to the wall{' '}
                                 <strong>{userdata.pseudo}</strong> ! You can
-                                send posts with or without image and see posts
-                                from users you follow ! If you don't have any
-                                yet, go to the next page to add some{' '}
+                                send posts with image or youtube video and see
+                                posts from users you follow ! If you don't have
+                                any yet, go to the next page to add some{' '}
                                 <span role="img" aria-label="donut">
                                   😀
                                 </span>
@@ -641,11 +674,6 @@ export default function Posts() {
                 </>
               )}
             </Grid>
-          </Grid>
-          <Grid item xs={2} sm={2} md={2} lg={2} style={{ textAlign: 'end' }}>
-            <IconButton onClick={openInfos}>
-              <HelpIcon />
-            </IconButton>
           </Grid>
         </Grid>
       </Grid>
