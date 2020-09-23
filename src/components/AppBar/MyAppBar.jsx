@@ -4,7 +4,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Axios from "axios";
 import { Avatar } from "@material-ui/core";
 import Zoom from "react-reveal";
-import { apiUrl } from "../../../apiUrl";
+import { apiUrl } from "../../apiUrl";
 import IconButton from "@material-ui/core/IconButton";
 import HomeIcon from "@material-ui/icons/Home";
 import { Link, Redirect } from "react-router-dom";

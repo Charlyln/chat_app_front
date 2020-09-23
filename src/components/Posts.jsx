@@ -18,7 +18,7 @@ import {
 import Axios from 'axios'
 import './messenger.css'
 import { Redirect } from 'react-router-dom'
-import { apiUrl } from '../../apiUrl'
+import { apiUrl } from '../apiUrl'
 import MyAppBar from './AppBar/MyAppBar'
 import SendIcon from '@material-ui/icons/Send'
 import PhotoIcon from '@material-ui/icons/Photo'

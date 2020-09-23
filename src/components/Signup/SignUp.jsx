@@ -2,25 +2,18 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import {
   TextField,
-  Button,
-  Snackbar,
-  Avatar,
   Grid,
   CircularProgress
 } from '@material-ui/core'
-import MuiAlert from '@material-ui/lab/Alert'
 import { Redirect } from 'react-router-dom'
 import Axios from 'axios'
 import { Toolbar, AppBar } from '@material-ui/core'
 import { apiUrl } from '../../apiUrl'
-import CloudUploadIcon from '@material-ui/icons/CloudUpload'
-import PersonIcon from '@material-ui/icons/Person'
-import CheckIcon from '@material-ui/icons/Check'
-import SendIcon from '@material-ui/icons/Send'
+import SnackBarSection from './SnackBarSection'
+import AvatarSection from './AvatarSection'
+import SubmitSection from './SubmitSection'
 
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />
-}
+
 
 const SignUp = () => {
   const [pseudo, setPseudo] = useState('')
@@ -122,10 +115,6 @@ const SignUp = () => {
     return <Redirect to="/posts" />
   }
 
-  // if (redirect && signupSuccess) {
-  //   return <Redirect to="/posts" />
-  // }
-
   return (
     <>
       <AppBar position="static">
@@ -143,48 +132,12 @@ const SignUp = () => {
       ) : (
         <form autoComplete="off" onSubmit={Signup}>
           <Grid container alignItems="center" style={{ height: '70%' }}>
-            <Grid item xs={12} style={{ marginTop: '80px' }}>
-              <Grid container alignItems="center" justify="center">
-                {isLoading ? 'loading' : ''}
-                <input
-                  accept="image/*"
-                  style={{ display: 'none' }}
-                  id="contained-button-file"
-                  type="file"
-                  files={logo}
-                  onChange={handleLogo}
-                  multiple
-                />
-                <label htmlFor="contained-button-file">
-                  <Button
-                    startIcon={<CloudUploadIcon />}
-                    variant="outlined"
-                    color="primary"
-                    component="span"
-                  >
-                    Upload
-                  </Button>
-                </label>
+            <AvatarSection
+              handleLogo={handleLogo}
+              logo={logo}
+              getAvatar={getAvatar}
+            />
 
-                <Button
-                  color="primary"
-                  variant="outlined"
-                  onClick={getAvatar}
-                  startIcon={<PersonIcon />}
-                >
-                  Random
-                </Button>
-              </Grid>
-            </Grid>
-            <Grid item xs={12} style={{ marginTop: '50px' }}>
-              <Grid container alignItems="center" justify="center">
-                <Avatar
-                  alt="Temy Sharp"
-                  src={logo}
-                  style={{ width: '70px', height: '70px' }}
-                />
-              </Grid>
-            </Grid>
             <Grid item xs={12} style={{ marginTop: '50px' }}>
               <Grid container alignItems="center" justify="center">
                 <TextField
@@ -196,96 +149,20 @@ const SignUp = () => {
                   onChange={(e) => setPseudo(e.target.value)}
                 />
 
-                <Snackbar
-                  open={open2}
-                  autoHideDuration={2000}
-                  onClose={() => setOpen2(false)}
-                >
-                  <Alert severity="info">
-                    Select a picture{' '}
-                    <span role="img" aria-label="donut">
-                      😀
-                    </span>
-                  </Alert>
-                </Snackbar>
-                <Snackbar
-                  open={open3}
-                  autoHideDuration={2000}
-                  onClose={() => setOpen3(false)}
-                >
-                  <Alert severity="info">
-                    Put your pseudo{' '}
-                    <span role="img" aria-label="donut">
-                      😀
-                    </span>
-                  </Alert>
-                </Snackbar>
-                <Snackbar
-                  open={open4}
-                  autoHideDuration={2000}
-                  onClose={() => setOpen4(false)}
-                >
-                  <Alert severity="info">
-                    Put your pseudo and select a picture{' '}
-                    <span role="img" aria-label="donut">
-                      😀
-                    </span>
-                  </Alert>
-                </Snackbar>
+                <SnackBarSection
+                  open2={open2}
+                  setOpen2={setOpen2}
+                  open3={open3}
+                  setOpen3={setOpen3}
+                  open4={open4}
+                  setOpen4={setOpen4}
+                />
               </Grid>
             </Grid>
-            <Grid item xs={12} style={{ marginTop: '50px' }}>
-              <Grid container alignItems="center" justify="center">
-                {signupLoading ? (
-                  <Button
-                    style={{
-                      width: '90px',
-                      height: '35px'
-                    }}
-                    variant="contained"
-                    color="primary"
-                    disabled={signupLoading}
-                  >
-                    <CircularProgress size={23} />
-                  </Button>
-                ) : signupSuccess ? (
-                  <Button
-                    style={{
-                      backgroundColor: '#4caf50',
-                      width: '90px',
-                      height: '35px'
-                    }}
-                    variant="contained"
-                    endIcon={<CheckIcon />}
-                  >
-                    Done
-                  </Button>
-                ) : (
-                  <Button
-                    type="submit"
-                    style={{
-                      width: '90px',
-                      height: '35px'
-                    }}
-                    variant="contained"
-                    color="primary"
-                    disabled={signupLoading}
-                    endIcon={<SendIcon />}
-                  >
-                    Join
-                  </Button>
-                )}
-
-                {/* <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  style={{ margin: '20px' }}
-                >
-                  Join
-                </Button> */}
-              </Grid>
-            </Grid>
+            <SubmitSection
+              signupLoading={signupLoading}
+              signupSuccess={signupSuccess}
+            />
           </Grid>
         </form>
       )}

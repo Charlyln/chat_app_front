@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Axios from "axios";
 import { Redirect } from "react-router-dom";
-import { apiUrl } from "../../apiUrl";
+import { apiUrl } from "../apiUrl";
 import MyAppBar from "./AppBar/MyAppBar";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";

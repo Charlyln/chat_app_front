@@ -22,7 +22,7 @@ import Slide from "react-reveal";
 import Alert from "@material-ui/lab/Alert";
 import Favorite from "@material-ui/icons/Favorite";
 import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
-import { apiUrl } from "../../apiUrl";
+import { apiUrl } from "../apiUrl";
 import HelpIcon from "@material-ui/icons/Help";
 import MyAppBar from "./AppBar/MyAppBar";
 import SendIcon from "@material-ui/icons/Send";
