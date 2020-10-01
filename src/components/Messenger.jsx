@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
+import React, { useEffect, useState } from 'react'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemText from '@material-ui/core/ListItemText'
 import {
   Paper,
   TextField,
@@ -12,136 +12,162 @@ import {
   Snackbar,
   FormControlLabel,
   Checkbox,
-  IconButton,
-} from "@material-ui/core";
-import Axios from "axios";
-import Skeleton from "@material-ui/lab/Skeleton";
-import "./messenger.css";
-import { Redirect } from "react-router-dom";
-import Slide from "react-reveal";
-import Alert from "@material-ui/lab/Alert";
-import Favorite from "@material-ui/icons/Favorite";
-import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
-import { apiUrl } from "../apiUrl";
-import HelpIcon from "@material-ui/icons/Help";
-import MyAppBar from "./AppBar/MyAppBar";
-import SendIcon from "@material-ui/icons/Send";
+  IconButton
+} from '@material-ui/core'
+import Axios from 'axios'
+import Skeleton from '@material-ui/lab/Skeleton'
+import './messenger.css'
+import { Redirect } from 'react-router-dom'
+import Slide from 'react-reveal'
+import Alert from '@material-ui/lab/Alert'
+import Favorite from '@material-ui/icons/Favorite'
+import FavoriteBorder from '@material-ui/icons/FavoriteBorder'
+import { apiUrl } from '../apiUrl'
+import HelpIcon from '@material-ui/icons/Help'
+import MyAppBar from './AppBar/MyAppBar'
+import SendIcon from '@material-ui/icons/Send'
+import DeleteIcon from '@material-ui/icons/Delete'
 
 export default function Messenger() {
-  const [dataMessages, setdataMessages] = useState([]);
+  const [dataMessages, setdataMessages] = useState([])
   // const [userData, setUserData] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [message, setMessage] = useState("");
-  const [UserId] = useState(window.localStorage.getItem("uuid"));
-  const [userdata, setuserdata] = useState([]);
-  const [open, setOpen] = useState(false);
-  const array = [1, 2, 3, 4, 5];
+  const [isLoading, setIsLoading] = useState(true)
+  const [message, setMessage] = useState('')
+  const [UserId] = useState(window.localStorage.getItem('uuid'))
+  const [userdata, setuserdata] = useState([])
+  const [open, setOpen] = useState(false)
+  const [deletePostok, setDeletePostok] = useState(false)
+  const array = [1, 2, 3, 4, 5]
   const emojis = [
     {
-      logo: "😀",
+      logo: '😀'
     },
     {
-      logo: "😍",
+      logo: '😍'
     },
     {
-      logo: "🤣",
+      logo: '🤣'
     },
     {
-      logo: "🤘",
-    },
-  ];
+      logo: '🤘'
+    }
+  ]
 
   const handleClose = (event, reason) => {
-    setOpen(false);
-  };
+    setOpen(false)
+  }
+
+  const handleCloseDeleteMessage = () => {
+    setDeletePostok(false)
+  }
 
   const openInfos = () => {
-    setOpen(true);
-  };
+    setOpen(true)
+  }
 
   useEffect(() => {
-    getMessages();
-    getUser();
-  }, []);
+    getMessages()
+    getUser()
+  }, [])
 
   const getMessages = async () => {
     try {
-      const res = await Axios.get(`${apiUrl}/messages`);
-      setdataMessages(res.data);
+      const res = await Axios.get(`${apiUrl}/messages`)
+      setdataMessages(res.data)
 
       const timer = setTimeout(() => {
-        setIsLoading(false);
-      }, 500);
-      return () => clearTimeout(timer);
+        setIsLoading(false)
+      }, 500)
+      return () => clearTimeout(timer)
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
-  };
+  }
 
   const putLike = async (e) => {
-    const id = e.target.id;
-    const likeObject = userdata.Likes.find((like) => like.MessageUuid === id);
+    const id = e.target.id
+    const likeObject = userdata.Likes.find((like) => like.MessageUuid === id)
     if (likeObject) {
-      const likeId = likeObject.id;
+      const likeId = likeObject.id
 
-      await Axios.delete(`${apiUrl}/likes/${likeId}`);
+      await Axios.delete(`${apiUrl}/likes/${likeId}`)
     } else {
       await Axios.post(`${apiUrl}/likes`, {
         MessageUuid: id,
-        UserUuid: UserId,
-      });
+        UserUuid: UserId
+      })
     }
 
-    getMessages();
-    getUser();
-  };
+    getMessages()
+    getUser()
+  }
 
   const getUser = async () => {
-    const id = window.localStorage.getItem("uuid");
+    const id = window.localStorage.getItem('uuid')
     try {
-      const res = await Axios.get(`${apiUrl}/users/${id}`);
-      setuserdata(res.data);
+      const res = await Axios.get(`${apiUrl}/users/${id}`)
+      setuserdata(res.data)
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
-  };
+  }
+
+  const deleteMessage = async (uuid) => {
+    await Axios.delete(`${apiUrl}/messages/${uuid}`)
+    getMessages()
+    setDeletePostok(true)
+  }
 
   useEffect(() => {
     const interval = setInterval(() => {
-      getMessages();
-    }, 2000);
-    return () => clearInterval(interval);
-  }, []);
+      getMessages()
+    }, 2000)
+    return () => clearInterval(interval)
+  }, [])
 
   const postMessage = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
-      const UserId = window.localStorage.getItem("uuid");
+      const UserId = window.localStorage.getItem('uuid')
       await Axios.post(`${apiUrl}/messages`, {
         content: message,
-        UserUuid: UserId,
-      });
-      const res = await Axios.get(`${apiUrl}/messages`);
-      setdataMessages(res.data);
-      setMessage("");
+        UserUuid: UserId
+      })
+      const res = await Axios.get(`${apiUrl}/messages`)
+      setdataMessages(res.data)
+      setMessage('')
       // setFirstMessage(true)
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
-  };
+  }
 
-  if (!window.localStorage.getItem("uuid")) {
-    return <Redirect to="/" />;
+  if (!window.localStorage.getItem('uuid')) {
+    return <Redirect to="/" />
   }
   return (
     <>
       <MyAppBar />
 
-      <Grid container alignItems="center" style={{ marginTop: "70px" }}>
+      <Grid container alignItems="center" style={{ marginTop: '70px' }}>
         <Grid container>
-          <Grid item xs={12} style={{ textAlign: "end" }}>
+          <Grid item xs={12} style={{ textAlign: 'end' }}>
             <IconButton>
               <HelpIcon onClick={openInfos} />
+              <Snackbar
+                open={deletePostok}
+                autoHideDuration={4000}
+                onClose={handleCloseDeleteMessage}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+              >
+                <Alert
+                  onClose={handleCloseDeleteMessage}
+                  severity="success"
+                  variant="filled"
+                >
+                  Message deleted !
+                </Alert>
+              </Snackbar>
             </IconButton>
           </Grid>
         </Grid>
@@ -151,7 +177,7 @@ export default function Messenger() {
             <Grid container alignItems="center" justify="center">
               {isLoading ? (
                 <>
-                  <List style={{ width: "500px", marginTop: "17px" }}>
+                  <List style={{ width: '500px', marginTop: '17px' }}>
                     <Slide top cascade>
                       {array.map((el) => (
                         <ListItem alignItems="flex-start">
@@ -159,7 +185,7 @@ export default function Messenger() {
                             variant="rect"
                             height={72}
                             className="paperOther skeleton"
-                            style={{ margin: "8px 16px" }}
+                            style={{ margin: '8px 16px' }}
                           ></Skeleton>
                         </ListItem>
                       ))}
@@ -168,10 +194,10 @@ export default function Messenger() {
                 </>
               ) : (
                 <>
-                  <List style={{ width: "500px" }}>
+                  <List style={{ width: '500px' }}>
                     {dataMessages
                       .sort(function (a, b) {
-                        return new Date(a.createdAt) - new Date(b.createdAt);
+                        return new Date(a.createdAt) - new Date(b.createdAt)
                       })
                       .slice(Math.max(dataMessages.length - 5, 0))
                       .map((message) => (
@@ -180,16 +206,16 @@ export default function Messenger() {
                           style={{ margin: 32 }}
                           className={
                             message.UserUuid === UserId
-                              ? "paperMe"
-                              : "paperOther"
+                              ? 'paperMe'
+                              : 'paperOther'
                           }
                         >
                           <ListItem
                             alignItems="flex-start"
                             className={
                               message.UserUuid === UserId
-                                ? "listMe"
-                                : "listOther"
+                                ? 'listMe'
+                                : 'listOther'
                             }
                           >
                             <ListItemAvatar>
@@ -199,34 +225,49 @@ export default function Messenger() {
                               />
                             </ListItemAvatar>
                             <ListItemText
-                              primary={message.content || "message"}
+                              primary={message.content || 'message'}
                               secondary={message.User.pseudo}
                             />
 
                             <FormControlLabel
+                              labelPlacement="start"
                               className="like"
                               control={
-                                <Checkbox
-                                  icon={<FavoriteBorder fontSize="small" />}
-                                  checkedIcon={<Favorite fontSize="small" />}
-                                  id={message.uuid}
-                                  name={message.likes}
-                                  onChange={putLike}
-                                  checked={
-                                    message.Likes.find(
-                                      (like) => like.UserUuid === UserId
-                                    )
-                                      ? true
-                                      : false
-                                  }
-                                />
+                                <>
+                                  <Checkbox
+                                    icon={<FavoriteBorder fontSize="small" />}
+                                    checkedIcon={<Favorite fontSize="small" />}
+                                    id={message.uuid}
+                                    name={message.likes}
+                                    onChange={putLike}
+                                    checked={
+                                      message.Likes.find(
+                                        (like) => like.UserUuid === UserId
+                                      )
+                                        ? true
+                                        : false
+                                    }
+                                  />
+                                </>
                               }
                               label={
                                 message.Likes.length > 0
                                   ? message.Likes.length
-                                  : ""
+                                  : ''
                               }
                             />
+                            {message.UserUuid === UserId ? (
+                              <IconButton
+                                style={{ margin: '3px 0px' }}
+                                size="small"
+                                aria-label="settings"
+                                onClick={() => deleteMessage(message.uuid)}
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            ) : (
+                              ''
+                            )}
                           </ListItem>
                         </Paper>
                       ))}
@@ -239,7 +280,7 @@ export default function Messenger() {
             <Grid container>
               <form autoComplete="off" onSubmit={postMessage}>
                 <TextField
-                  style={{ margin: "20px" }}
+                  style={{ margin: '20px' }}
                   id="message"
                   label="message"
                   variant="outlined"
@@ -252,7 +293,7 @@ export default function Messenger() {
                   variant="contained"
                   color="primary"
                   disabled={!message}
-                  style={{ margin: "27px 0px" }}
+                  style={{ margin: '27px 0px' }}
                   endIcon={<SendIcon />}
                 >
                   Send
@@ -270,14 +311,14 @@ export default function Messenger() {
                     </Button>
                   ))}
                   {isLoading ? (
-                    ""
+                    ''
                   ) : (
                     <Snackbar
                       open={open}
                       autoHideDuration={10000}
                       anchorOrigin={{
-                        vertical: "top",
-                        horizontal: "right",
+                        vertical: 'top',
+                        horizontal: 'right'
                       }}
                       onClose={handleClose}
                     >
@@ -295,16 +336,16 @@ export default function Messenger() {
                       <Alert
                         onClose={handleClose}
                         severity="info"
-                        style={{ width: "330px" }}
+                        style={{ width: '330px' }}
                       >
                         Here you can send messages and receive messages from
-                        other people. You can only see the last five{" "}
+                        other people. You can only see the last five{' '}
                         <span role="img" aria-label="donut">
                           😀
                         </span>
                       </Alert>
                     </Snackbar>
-                  )}{" "}
+                  )}{' '}
                 </Grid>
               </form>
             </Grid>
@@ -312,5 +353,5 @@ export default function Messenger() {
         </Grid>
       </Grid>
     </>
-  );
+  )
 }

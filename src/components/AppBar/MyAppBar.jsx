@@ -1,16 +1,24 @@
-import React, { useEffect, useState } from "react";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Axios from "axios";
-import { Avatar } from "@material-ui/core";
-import Zoom from "react-reveal";
-import { apiUrl } from "../../apiUrl";
-import IconButton from "@material-ui/core/IconButton";
-import HomeIcon from "@material-ui/icons/Home";
-import { Link, Redirect } from "react-router-dom";
-import GroupAddIcon from "@material-ui/icons/GroupAdd";
-import QuestionAnswerIcon from "@material-ui/icons/QuestionAnswer";
-
+import React, { useEffect, useState } from 'react'
+import AppBar from '@material-ui/core/AppBar'
+import Toolbar from '@material-ui/core/Toolbar'
+import Axios from 'axios'
+import {
+  Avatar,
+  Button,
+  Dialog,
+  DialogContent,
+  DialogContentText,
+  DialogTitle
+} from '@material-ui/core'
+import Zoom from 'react-reveal'
+import { apiUrl } from '../../apiUrl'
+import IconButton from '@material-ui/core/IconButton'
+import HomeIcon from '@material-ui/icons/Home'
+import { Link, Redirect } from 'react-router-dom'
+import GroupAddIcon from '@material-ui/icons/GroupAdd'
+import QuestionAnswerIcon from '@material-ui/icons/QuestionAnswer'
+import DeleteIcon from '@material-ui/icons/Delete'
+import ClearIcon from '@material-ui/icons/Clear'
 // import HistoryIcon from '@material-ui/icons/History';
 // import AccountCircle from "@material-ui/icons/AccountCircle";
 // import { Badge } from "@material-ui/core";
@@ -19,28 +27,43 @@ import QuestionAnswerIcon from "@material-ui/icons/QuestionAnswer";
 // import MoreIcon from '@material-ui/icons/MoreVert';
 
 export default function MyAppBar() {
-  const [isLoading, setisLoading] = useState(true);
-  const [userdata, setuserdata] = useState("");
+  const [isLoading, setisLoading] = useState(true)
+  const [userdata, setuserdata] = useState('')
+  const [open, setOpen] = useState(false)
+
+  const handleClose = () => {
+    setOpen(false)
+  }
+  const handleOpen = () => {
+    setOpen(true)
+  }
 
   useEffect(() => {
-    getUser();
-  }, []);
+    getUser()
+  }, [])
 
   if (!isLoading && !userdata) {
-    return <Redirect to="/" />;
+    return <Redirect to="/" />
   }
 
   const getUser = async () => {
-    const id = window.localStorage.getItem("uuid");
+    const id = window.localStorage.getItem('uuid')
 
     try {
-      const res = await Axios.get(`${apiUrl}/users/${id}`);
-      setuserdata(res.data);
-      setisLoading(false);
+      const res = await Axios.get(`${apiUrl}/users/${id}`)
+      setuserdata(res.data)
+      setisLoading(false)
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
-  };
+  }
+
+  const deleteUser = async () => {
+    const uuid = window.localStorage.getItem('uuid')
+    console.log(uuid)
+    await Axios.delete(`${apiUrl}/users/${uuid}`)
+    setuserdata('')
+  }
 
   return (
     <AppBar position="fixed">
@@ -48,13 +71,13 @@ export default function MyAppBar() {
         <Zoom top>
           <Avatar
             alt="Temy Sharp"
-            src={userdata ? userdata.avatar : ""}
-            style={{ width: "50px", height: "50px" }}
+            src={userdata ? userdata.avatar : ''}
+            style={{ width: '50px', height: '50px' }}
           />
         </Zoom>
         <Link to="/posts">
           <IconButton
-            style={{ marginLeft: "10px" }}
+            style={{ marginLeft: '10px' }}
             color="white"
             aria-label="menu"
           >
@@ -71,6 +94,50 @@ export default function MyAppBar() {
             <QuestionAnswerIcon />
           </IconButton>
         </Link>
+        <IconButton
+          onClick={handleOpen}
+          color="white"
+          style={{ marginLeft: 'auto' }}
+        >
+          <DeleteIcon />
+        </IconButton>
+
+        <Dialog
+          open={open}
+          keepMounted
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-slide-title"
+          aria-describedby="alert-dialog-slide-description"
+          maxWidth="sm"
+          fullWidth
+        >
+          <DialogTitle
+            id="alert-dialog-slide-title"
+            style={{ alignSelf: 'center' }}
+          >
+            {'Do you want delete your profil ?'}
+          </DialogTitle>
+          <DialogContent style={{ alignSelf: 'center' }}>
+            <DialogContentText id="alert-dialog-description">
+              ( All the messages, posts and comments will be deleted too )
+            </DialogContentText>
+          </DialogContent>
+
+          <DialogContent style={{ alignSelf: 'center' }}>
+            <Button color="primary" onClick={handleClose}>
+              Back
+            </Button>
+            <Button
+              style={{ marginLeft: '30px' }}
+              variant="contained"
+              color="secondary"
+              endIcon={<ClearIcon />}
+              onClick={deleteUser}
+            >
+              Delete my profil
+            </Button>
+          </DialogContent>
+        </Dialog>
 
         {/* <IconButton style={{marginLeft: "10px"}}  color="primary" aria-label="menu">
           <HomeIcon />
@@ -113,5 +180,5 @@ export default function MyAppBar() {
   </IconButton> */}
       </Toolbar>
     </AppBar>
-  );
+  )
 }

@@ -13,7 +13,9 @@ import {
   Fade,
   ListItem,
   Paper,
-  CircularProgress
+  CircularProgress,
+  IconButton,
+  Snackbar
 } from '@material-ui/core'
 import Axios from 'axios'
 import './messenger.css'
@@ -30,6 +32,8 @@ import OndemandVideoIcon from '@material-ui/icons/OndemandVideo'
 import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon'
 import CardCollapse from './CardCollapse'
 import CheckIcon from '@material-ui/icons/Check'
+import DeleteIcon from '@material-ui/icons/Delete'
+import Alert from '@material-ui/lab/Alert'
 
 export default function Posts() {
   const [dataMessages, setdataPosts] = useState([])
@@ -39,8 +43,6 @@ export default function Posts() {
   const [UserId] = useState(window.localStorage.getItem('uuid'))
   const [userdata, setuserdata] = useState([])
   const [logo, setLogo] = useState('')
-  const [postId, setPostId] = useState('')
-  const [comment, setComment] = useState('')
   const [arrayPostId] = useState([])
   const [open2, setOpen2] = useState(false)
   const [photo, setPhoto] = useState(false)
@@ -50,6 +52,7 @@ export default function Posts() {
   const [followData, setFollowDatas] = useState([])
   const [postLoading, setPostLoading] = useState(false)
   const [postSuccess, setPostSuccess] = useState(false)
+  const [deletePostok, setDeletePostok] = useState(false)
 
   const handlePhotoOpen = () => {
     setOpen2(true)
@@ -124,27 +127,17 @@ export default function Posts() {
     getUser()
   }
 
+  const deletePost = async (uuid) => {
+    await Axios.delete(`${apiUrl}/posts/${uuid}`)
+    getPosts()
+    setDeletePostok(true)
+  }
+
   const getFollows = async () => {
     try {
       const UserId = window.localStorage.getItem('uuid')
       const res = await Axios.get(`${apiUrl}/followers/${UserId}`)
       setFollowDatas(res.data)
-    } catch (err) {
-      console.log(err)
-    }
-  }
-
-  const postComment = async (e) => {
-    e.preventDefault()
-    try {
-      const UserId = window.localStorage.getItem('uuid')
-      await Axios.post(`${apiUrl}/comments`, {
-        content: comment,
-        UserUuid: UserId,
-        PostUuid: postId
-      })
-
-      setComment('')
     } catch (err) {
       console.log(err)
     }
@@ -166,6 +159,10 @@ export default function Posts() {
     }, 2000)
     return () => clearInterval(interval)
   }, [])
+
+  const handleCloseDeleteMessage = () => {
+    setDeletePostok(false)
+  }
 
   const sendPost = async (e) => {
     e.preventDefault()
@@ -242,38 +239,8 @@ export default function Posts() {
                       Post
                     </Button>
                   </ListItem>
-                  {/* <ListItem>
-                    <TextField
-                      className="textField"
-                      variant="outlined"
-                      onClick={handleClickOpen}
-                      id="standard-read-only-input"
-                      defaultValue="Post"
-                      InputProps={{
-                        readOnly: true,
-                      }}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <TextField
-                      id="post"
-                      label="Post"
-                      variant="outlined"
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      className="textField"
-                    />
-                  </ListItem> */}
-                  <ListItem>
-                    {/* <Button
-                      variant="outlined"
-                      color="primary"
-                      onClick={handlePhotoOpen}
-                      startIcon={<PhotoIcon />}
-                    >
-                      Photo
-                    </Button> */}
 
+                  <ListItem>
                     <input
                       accept="image/*"
                       id="icon-button-file1"
@@ -307,6 +274,7 @@ export default function Posts() {
                     </Button>
                   </ListItem>
                 </List>
+
                 <Dialog
                   open={open2}
                   keepMounted
@@ -524,6 +492,20 @@ export default function Posts() {
 
           <Grid item xs={12} sm={12} md={6} lg={6}>
             <Grid container alignItems="center" justify="center">
+              <Snackbar
+                open={deletePostok}
+                autoHideDuration={4000}
+                onClose={handleCloseDeleteMessage}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+              >
+                <Alert
+                  onClose={handleCloseDeleteMessage}
+                  severity="success"
+                  variant="filled"
+                >
+                  Post deleted !
+                </Alert>
+              </Snackbar>
               {isLoading ? (
                 <>
                   {/* <List style={{ width: "500px" }}>
@@ -619,6 +601,21 @@ export default function Posts() {
                                         R
                                       </Avatar>
                                     }
+                                    action={
+                                      message.UserUuid === UserId ? (
+                                        <IconButton
+                                          size="small"
+                                          aria-label="settings"
+                                          onClick={() =>
+                                            deletePost(message.uuid)
+                                          }
+                                        >
+                                          <DeleteIcon />
+                                        </IconButton>
+                                      ) : (
+                                        ''
+                                      )
+                                    }
                                     title={message.User.pseudo}
                                     subheader={message.createdAt.slice(0, 10)}
                                   />
@@ -659,10 +656,8 @@ export default function Posts() {
                                     UserId={UserId}
                                     arrayPostId={arrayPostId}
                                     userdata={userdata}
-                                    postComment={postComment}
-                                    comment={comment}
-                                    setComment={setComment}
-                                    setPostId={setPostId}
+                                    getPosts={getPosts}
+                                    postId={message.uuid}
                                   />
                                 </Card>
                               </Paper>

@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import {
-  TextField,
   Button,
   CardContent,
   CardActions,
@@ -12,29 +11,47 @@ import {
   ListItemText,
   ListItemAvatar,
   List,
-  ListItemSecondaryAction
+  ListItemSecondaryAction,
+  IconButton,
+  Snackbar
 } from '@material-ui/core'
-import SendIcon from '@material-ui/icons/Send'
 import FavoriteBorder from '@material-ui/icons/FavoriteBorder'
 import Favorite from '@material-ui/icons/Favorite'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import ExpandLessIcon from '@material-ui/icons/ExpandLess'
+import DeleteIcon from '@material-ui/icons/Delete'
+import Axios from 'axios'
+import { apiUrl } from '../apiUrl'
+import Alert from '@material-ui/lab/Alert'
+import CommentInput from './CommentInput'
 
 const CardCollapse = ({
   message,
-  arrayPostId,
   UserId,
   putLike,
   userdata,
-  postComment,
-  comment,
-  setComment,
-  setPostId
+  getPosts,
+  postId
 }) => {
   const [expanded, setExpanded] = useState(false)
+  const [open, setOpen] = useState(false)
+
+  const handleOpen = () => {
+    setOpen(true)
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+  }
 
   const handleExpandClick = () => {
     setExpanded(!expanded)
+  }
+
+  const deleteComment = async (uuid) => {
+    await Axios.delete(`${apiUrl}/comments/${uuid}`)
+    getPosts()
+    handleOpen()
   }
 
   return (
@@ -85,47 +102,45 @@ const CardCollapse = ({
                       primary={comment.User.pseudo}
                       secondary={comment.content}
                     />
-                    <ListItemSecondaryAction>
-                      <ListItemText
-                        secondary={comment.createdAt.slice(0, 10)}
-                      />
-                    </ListItemSecondaryAction>
+                    <ListItemText
+                      style={{ textAlign: 'end' }}
+                      secondary={comment.createdAt.slice(0, 10)}
+                    />
+                    {comment.UserUuid === UserId ? (
+                      <ListItemSecondaryAction>
+                        <IconButton
+                          size="small"
+                          aria-label="settings"
+                          onClick={() => deleteComment(comment.id)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </ListItemSecondaryAction>
+                    ) : (
+                      ''
+                    )}
                   </ListItem>
                 ))}
               </>
             ) : (
               ''
             )}
-            <ListItem alignItems="flex-end">
-              <ListItemAvatar>
-                <Avatar alt={userdata.pseudo} src={userdata.avatar} />
-              </ListItemAvatar>
-              <form onSubmit={postComment}>
-                <TextField
-                  id="outlined-basic"
-                  label="Comment"
-                  variant="outlined"
-                  value={comment}
-                  size="small"
-                  onChange={(e) => setComment(e.target.value)}
-                />
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  disabled={!comment}
-                  endIcon={<SendIcon />}
-                  size="small"
-                  onClick={() => setPostId(message.uuid)}
-                  style={{
-                    margin: '5px 0px 0px 10px'
-                  }}
-                >
-                  Send
-                </Button>
-              </form>
-            </ListItem>
+            <CommentInput
+              postId={postId}
+              userdata={userdata}
+              message={message}
+            />
           </List>
+          <Snackbar
+            open={open}
+            autoHideDuration={3000}
+            onClose={handleClose}
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          >
+            <Alert onClose={handleClose} severity="success" variant="filled">
+              Comment deleted !
+            </Alert>
+          </Snackbar>
         </CardContent>
       </Collapse>
     </>

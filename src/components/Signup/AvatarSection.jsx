@@ -23,6 +23,7 @@ const AvatarSection = ({ handleLogo, logo, getAvatar }) => {
               variant="outlined"
               color="primary"
               component="span"
+              style={{ margin: '2px' }}
             >
               Upload
             </Button>
@@ -32,6 +33,7 @@ const AvatarSection = ({ handleLogo, logo, getAvatar }) => {
             variant="outlined"
             onClick={getAvatar}
             startIcon={<PersonIcon />}
+            style={{ margin: '2px' }}
           >
             Random
           </Button>
