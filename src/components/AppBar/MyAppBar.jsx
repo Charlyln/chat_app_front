@@ -60,8 +60,8 @@ export default function MyAppBar() {
 
   const deleteUser = async () => {
     const uuid = window.localStorage.getItem('uuid')
-    console.log(uuid)
     await Axios.delete(`${apiUrl}/users/${uuid}`)
+    window.localStorage.removeItem('uuid')
     setuserdata('')
   }
 
